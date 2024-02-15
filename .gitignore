@@ -1,0 +1,8 @@
+taiko.db3
+taiko.db3-shm
+taiko.db3-wal
+.env
+data/
+.idea
+.DS_Store
+config.json
