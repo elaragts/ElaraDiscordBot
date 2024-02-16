@@ -5,9 +5,6 @@
  */
 
 const { failEmojiId, clearEmojiId, FCEmojiId, APEmojiId, easyEmojiId, normalEmojiId, hardEmojiId, oniEmojiId, uraEmojiId } = require('./config.json');
-const data = require("./data");
-const taikodb = require("./taikodb");
-
 
 const handleChatInputCommand = async (interaction) => {
     const command = interaction.client.commands.get(interaction.commandName);

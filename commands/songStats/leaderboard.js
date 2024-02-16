@@ -20,7 +20,7 @@ module.exports = {
                     { name: 'ふつう/Normal', value: '2' },
                     { name: 'むずかしい/Hard', value: '3' },
                     { name: 'おに/Oni', value: '4'},
-                    { name: 'おに (裏) / Ura Oni', value: '5'}
+                    { name: 'おに (裏)/Ura Oni', value: '5'}
                 )
 )
     ,
@@ -29,7 +29,7 @@ module.exports = {
         const focusedValue = interaction.options.getFocused(); // Get query
 
         // Timeout promise
-        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({}), 2500)); // 2.5 seconds
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve([]), 2500)); // 2.5 seconds
 
         // Autocomplete promise
         const autocompletePromise = data.autocomplete(focusedValue);

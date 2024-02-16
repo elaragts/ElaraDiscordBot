@@ -31,7 +31,7 @@ for (let i in wordlist.items) {
 }
 
 /**
- *
+ * Searches for songs given a query
  * @param query Query
  */
 const searchSongs = (query) => {
@@ -54,8 +54,8 @@ const searchSongs = (query) => {
  * @param query
  * @returns {Promise<string[]>}
  */
-const autocomplete = (query) => {
-    return new Promise((resolve, reject) => {
+const autocomplete = async (query) => {
+    return new Promise( (resolve, reject) => {
         try {
             if (query === '') resolve([]);
             query = query.toLowerCase();
@@ -80,15 +80,32 @@ const autocomplete = (query) => {
     });
 };
 
+/**
+ * Returns song name given uniqueId
+ * @param uniqueId
+ * @param lang language (0 = JP, 1 = EN)
+ * @returns {*}
+ */
 const getSongName = (uniqueId, lang) => {
     if (!(uniqueId in songs)) throw new Error("Song not found!");
     if (!isLangInRange(lang)) throw new Error("Lang out of range!");
     return songs[uniqueId].titles[lang];
 }
 
+/**
+ * Returns if song with uniqueId is present in song list
+ * @param uniqueId
+ * @returns {boolean}
+ */
 const isSongPresent = (uniqueId) => {
     return uniqueId in songs;
 }
+
+/**
+ * Returns if lang value is in range
+ * @param lang
+ * @returns {boolean}
+ */
 const isLangInRange = (lang) => {
     return lang >= 0 && lang <=1 ;
 }
