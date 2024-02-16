@@ -52,22 +52,37 @@ module.exports = {
         const songInput = interaction.options.getString('song');
         const difficulty = parseInt(interaction.options.getString('difficulty'));
         //error checking
-        if (!songInput.includes('|')) {
-            await bot.replyWithErrorMessage(interaction, 'leaderboard', 'Bad input: missing pipe');
-            return;
+        let uniqueId, lang;
+        if (songInput.includes('|')) { //search with autocomplete
+            [uniqueId, lang] = songInput.split('|');
+            lang = parseInt(lang);
+            if (!data.isLangInRange(lang)) {
+                await bot.replyWithErrorMessage(interaction, 'leaderboard', 'Bad input: invalid lang');
+                return;
+            }
+            if (!data.isSongPresent(uniqueId)) {
+                await bot.replyWithErrorMessage(interaction, 'leaderboard', 'Bad input: invalid song ID');
+                return;
+            }
+            await interaction.deferReply();
+        } else { //search without autocomplete
+            await interaction.deferReply();
+            let searchResult = data.searchSongs(songInput);
+            if (searchResult.length === 0) {
+                await interaction.editReply({embeds: [{
+                        title: 'Error',
+                        description: `Song ${songInput} not found!`,
+                        color: 13369344,
+                        author: {
+                            name: 'Leaderboard'
+                        }}]});
+                return;
+            }
+            [uniqueId, lang] = searchResult;
+            lang = parseInt(lang);
         }
-        let [uniqueId, lang] = songInput.split('|');
-        lang = parseInt(lang);
-        if (!data.isLangInRange(lang)) {
-            await bot.replyWithErrorMessage(interaction, 'leaderboard', 'Bad input: invalid lang');
-            return;
-        }
-        if (!data.isSongPresent(uniqueId)) {
-            await bot.replyWithErrorMessage(interaction, 'leaderboard', 'Bad input: invalid song');
-            return;
-        }
+
         //error checking done
-        await interaction.deferReply();
         const res = taikodb.getLeaderboard(uniqueId, difficulty); //taiko DB query result
         let desc = '';
         //iterate over taiko DB return value and create text for the embed ({i}. {player}: :crown:{score})

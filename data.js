@@ -36,17 +36,12 @@ for (let i in wordlist.items) {
  */
 const searchSongs = (query) => {
     query = query.toLowerCase();
-    let results = []; //return arr
     for (let song in songs) {
         for (let i in songs[song].titles) {
-            if (songs[song].titles[i].toLowerCase() === query) return [song]; //return the song if there is an exact match
-            if (songs[song].titles[i].toLowerCase().includes(query)) { //append the song for a partial match
-                results.push(song);
-                if (results.length >= 11) return results; //limit results to 11
-            }
+            if (songs[song].titles[i].toLowerCase() === query) return [song,i]; //return the song if there is an exact match
         }
     }
-    return results;
+    return [];
 }
 
 /**
