@@ -4,7 +4,7 @@
  * Helper functions involving parsing wordlist.json and musicinfo.json
  */
 const wordlist = require('./data/datatable/wordlist.json');
-const musicorder = require('./data/datatable/music_order.json');
+const musicinfo = require('./data/datatable/musicinfo.json');
 
 const songs = {}; //uniqueId: {id, titles: [jp, en]}
 
@@ -14,8 +14,8 @@ const songs = {}; //uniqueId: {id, titles: [jp, en]}
  * @returns {number|*}
  */
 const getUniqueSongIdFromId = (id) => {
-    for (let i in musicorder.items) {
-        if (musicorder.items[i].id === id) return musicorder.items[i].uniqueId;
+    for (let i in musicinfo.items) {
+        if (musicinfo.items[i].id === id) return musicinfo.items[i].uniqueId;
     }
     return -1;
 }

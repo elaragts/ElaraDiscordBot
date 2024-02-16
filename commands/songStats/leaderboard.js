@@ -49,7 +49,6 @@ module.exports = {
         });
     },
     async execute(interaction) {
-        await interaction.deferReply();
         const songInput = interaction.options.getString('song');
         const difficulty = parseInt(interaction.options.getString('difficulty'));
         //error checking
@@ -68,6 +67,7 @@ module.exports = {
             return;
         }
         //error checking done
+        await interaction.deferReply();
         const res = taikodb.getLeaderboard(uniqueId, difficulty); //taiko DB query result
         let desc = '';
         //iterate over taiko DB return value and create text for the embed ({i}. {player}: :crown:{score})
