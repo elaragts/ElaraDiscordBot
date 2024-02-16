@@ -48,7 +48,7 @@ const replyWithErrorMessage = async (interaction, author, reason) => {
             name: author
         }
     };
-    interaction.reply({embeds: [errorEmbed], ephemeral: true});
+    await interaction.editReply({embeds: [errorEmbed], ephemeral: true});
 }
 
 const crownIdToEmoji = (crownId) => {
