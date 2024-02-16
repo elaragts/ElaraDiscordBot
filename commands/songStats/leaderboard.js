@@ -50,25 +50,43 @@ module.exports = {
     },
     async execute(interaction) {
         const songInput = interaction.options.getString('song');
-        const difficulty = interaction.options.getString('difficulty');
-        if (!songInput.includes('|')) interaction.reply('Bad'); //TODO: Change this to standard error msg
+        const difficulty = parseInt(interaction.options.getString('difficulty'));
+        //error checking
+        if (!songInput.includes('|')) {
+            await bot.replyWithErrorMessage(interaction, 'leaderboard', 'Bad input: missing pipe');
+            return;
+        }
         let [uniqueId, lang] = songInput.split('|');
         lang = parseInt(lang);
+        if (!data.isLangInRange(lang)) {
+            await bot.replyWithErrorMessage(interaction, 'leaderboard', 'Bad input: invalid lang');
+            return;
+        }
+        if (!data.isSongPresent(uniqueId)) {
+            await bot.replyWithErrorMessage(interaction, 'leaderboard', 'Bad input: invalid song');
+            return;
+        }
+        //error checking done
         const res = taikodb.getLeaderboard(uniqueId, difficulty); //taiko DB query result
         let desc = '';
+        //iterate over taiko DB return value and create text for the embed ({i}. {player}: :crown:{score})
         for (let i in res) {
             const crown = bot.crownIdToEmoji(res[i].BestCrown)
             desc += `${i}. ${res[i].MyDonName}: ${crown}${res[i].BestScore}\n`
         }
+        //no results
+        if (res.length === 0) desc = 'No best score data (only clears are shown)';
+
+        //construct embed
         const returnEmbed = {
-                    title: `${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}`,
-                    description: desc ,
-                    color: 15410003,
-                    author: {
-                        name: "Leaderboard"
-                    },
-                    timestamp: new Date().toISOString()
-                };
+                title: `${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}`,
+                description: desc ,
+                color: 15410003,
+                author: {
+                    name: "Leaderboard"
+                },
+                timestamp: new Date().toISOString()
+            };
         interaction.reply({ embeds: [returnEmbed] });
     },
 };

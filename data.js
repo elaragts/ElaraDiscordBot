@@ -81,9 +81,16 @@ const autocomplete = (query) => {
 };
 
 const getSongName = (uniqueId, lang) => {
-    if (!uniqueId in songs) throw new Error("Song not found!");
-    if (lang < 0 || lang >= 2) throw new Error("Lang out of range!");
+    if (!(uniqueId in songs)) throw new Error("Song not found!");
+    if (!isLangInRange(lang)) throw new Error("Lang out of range!");
     return songs[uniqueId].titles[lang];
 }
 
-module.exports = { searchSongs, autocomplete, getSongName };
+const isSongPresent = (uniqueId) => {
+    return uniqueId in songs;
+}
+const isLangInRange = (lang) => {
+    return lang >= 0 && lang <=1 ;
+}
+
+module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange };

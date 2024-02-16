@@ -4,7 +4,10 @@
  * Helper functions related to discord
  */
 
-const { failEmojiId, clearEmojiId, FCEmojiId, APEmojiId } = require('./config.json');
+const { failEmojiId, clearEmojiId, FCEmojiId, APEmojiId, easyEmojiId, normalEmojiId, hardEmojiId, oniEmojiId, uraEmojiId } = require('./config.json');
+const data = require("./data");
+const taikodb = require("./taikodb");
+
 
 const handleChatInputCommand = async (interaction) => {
     const command = interaction.client.commands.get(interaction.commandName);
@@ -39,6 +42,18 @@ const handleAutocomplete = async (interaction) => {
     }
 }
 
+const replyWithErrorMessage = async (interaction, author, reason) => {
+    const errorEmbed = {
+        title: 'Error',
+        description: reason,
+        color: 13369344,
+        author: {
+            name: author
+        }
+    };
+    interaction.reply({embeds: [errorEmbed], ephemeral: true});
+}
+
 const crownIdToEmoji = (crownId) => {
     switch (crownId) {
         case 1: return clearEmojiId;
@@ -48,4 +63,15 @@ const crownIdToEmoji = (crownId) => {
     }
 }
 
-module.exports = { handleChatInputCommand, handleAutocomplete, crownIdToEmoji }
+const difficultyToEmoji = (difficultyId) => {
+    switch (difficultyId) {
+        case 1: return easyEmojiId;
+        case 2: return normalEmojiId;
+        case 3: return hardEmojiId;
+        case 4: return oniEmojiId;
+        case 5: return uraEmojiId;
+        default: throw new Error('Unknown difficulty')
+    }
+}
+
+module.exports = { replyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji }

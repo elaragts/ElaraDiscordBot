@@ -18,30 +18,30 @@ const difficultyIdToName = (difficultyId, lang) => {
     switch (lang) {
         case 0:
             switch (difficultyId) {
-                case '1':
+                case 1:
                     return 'かんたん';
-                case '2':
+                case 2:
                     return 'ふつう';
-                case '3':
+                case 3:
                     return 'むずかしい';
-                case '4':
+                case 4:
                     return 'おに';
-                case '5':
+                case 5:
                     return 'おに (裏)';
                 default:
                     throw new Error(`Unknown Difficulty ${difficultyId}`);
             }
         case 1:
             switch (difficultyId) {
-                case '1':
+                case 1:
                     return 'Easy';
-                case '2':
+                case 2:
                     return 'Normal';
-                case '3':
+                case 3:
                     return 'Hard';
-                case '4':
+                case 4:
                     return 'Oni';
-                case '5':
+                case 5:
                     return 'Ura Oni';
                 default:
                     throw new Error(`Unknown difficulty ${difficultyId}`);
