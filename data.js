@@ -50,9 +50,9 @@ const searchSongs = (query) => {
 }
 
 /**
- * Gives autocomplete suggestions
+ * Returns autocomplete results for song search
  * @param query
- * @returns {string[]|*[]} [songTitle, "id|lang"]
+ * @returns {Promise<string[]>}
  */
 const autocomplete = (query) => {
     return new Promise((resolve, reject) => {

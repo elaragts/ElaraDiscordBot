@@ -3,6 +3,7 @@ taiko.db3-shm
 taiko.db3-wal
 .env
 data/
-.idea
+.idea/
 .DS_Store
 config.json
+node_modules/
