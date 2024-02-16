@@ -49,6 +49,7 @@ module.exports = {
         });
     },
     async execute(interaction) {
+        await interaction.deferReply();
         const songInput = interaction.options.getString('song');
         const difficulty = parseInt(interaction.options.getString('difficulty'));
         //error checking
@@ -87,6 +88,6 @@ module.exports = {
                 },
                 timestamp: new Date().toISOString()
             };
-        interaction.reply({ embeds: [returnEmbed] });
+        await interaction.editReply({ embeds: [returnEmbed] });
     },
 };
