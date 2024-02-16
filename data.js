@@ -48,4 +48,31 @@ const searchSongs = (query) => {
     }
     return results;
 }
-console.log(searchSongs("k"))
+
+/**
+ * Gives autocomplete suggestions
+ * @param query
+ * @returns {string[]|*[]} [songTitle, "id|lang"]
+ */
+const autocomplete = (query) => {
+    if (query === '') return [];
+    query = query.toLowerCase();
+    let results = []; //return arr
+    for (let song in songs) {
+        for (let i in songs[song].titles) {
+            if (songs[song].titles[i].toLowerCase() === query) return [[songs[song].titles[i], `${song}|${i}`]]; //return the song if there is an exact match
+            if (songs[song].titles[i].toLowerCase().includes(query)) { //append the song for a partial match
+                if (results.length < 10) results.push([songs[song].titles[i],`${song}|${i}`]); //limit results to 10
+            }
+        }
+    }
+    return results;
+}
+
+const getSongName = (uniqueId, lang) => {
+    if (!uniqueId in songs) throw new Error("Song not found!");
+    if (lang < 0 || lang >= 2) throw new Error("Lang out of range!");
+    return songs[uniqueId].titles[lang];
+}
+
+module.exports = { searchSongs, autocomplete, getSongName };
