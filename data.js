@@ -55,19 +55,30 @@ const searchSongs = (query) => {
  * @returns {string[]|*[]} [songTitle, "id|lang"]
  */
 const autocomplete = (query) => {
-    if (query === '') return [];
-    query = query.toLowerCase();
-    let results = []; //return arr
-    for (let song in songs) {
-        for (let i in songs[song].titles) {
-            if (songs[song].titles[i].toLowerCase() === query) return [[songs[song].titles[i], `${song}|${i}`]]; //return the song if there is an exact match
-            if (songs[song].titles[i].toLowerCase().includes(query)) { //append the song for a partial match
-                if (results.length < 10) results.push([songs[song].titles[i],`${song}|${i}`]); //limit results to 10
+    return new Promise((resolve, reject) => {
+        try {
+            if (query === '') resolve([]);
+            query = query.toLowerCase();
+            let results = []; // Return array
+            for (let song in songs) {
+                for (let i in songs[song].titles) {
+                    if (songs[song].titles[i].toLowerCase() === query) {
+                        // Return the song if there is an exact match
+                        resolve([[songs[song].titles[i], `${song}|${i}`]]);
+                        return;
+                    }
+                    if (songs[song].titles[i].toLowerCase().includes(query)) {
+                        // Append the song for a partial match
+                        if (results.length < 10) results.push([songs[song].titles[i], `${song}|${i}`]); // Limit results to 10
+                    }
+                }
             }
+            resolve(results); // Resolve with all collected results
+        } catch (error) {
+            reject(error); // Reject the promise in case of an error
         }
-    }
-    return results;
-}
+    });
+};
 
 const getSongName = (uniqueId, lang) => {
     if (!uniqueId in songs) throw new Error("Song not found!");

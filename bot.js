@@ -41,10 +41,10 @@ const handleAutocomplete = async (interaction) => {
 
 const crownIdToEmoji = (crownId) => {
     switch (crownId) {
-        case 1: return 'placeholder1';
-        case 2: return 'placeholder2';
-        case 3: return 'placeholder3';
-        default: return 'placeholder0';
+        case 1: return clearEmojiId;
+        case 2: return FCEmojiId;
+        case 3: return APEmojiId;
+        default: return failEmojiId;
     }
 }
 

@@ -23,26 +23,52 @@ module.exports = {
                     { name: 'おに (裏) / Ura Oni', value: '5'}
                 )
 )
-            ,
+    ,
     //handle autocomplete interaction
     async autocomplete(interaction) {
-        const focusedValue = interaction.options.getFocused(); //get query
-        const filtered = data.autocomplete(focusedValue); //get results TODO: set timer
-        await interaction.respond( //send result back to discord
-            filtered.map(choice => ({ name: choice[0], value: choice[1] })),
-        );
+        const focusedValue = interaction.options.getFocused(); // Get query
+
+        // Timeout promise
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({}), 2500)); // 2.5 seconds
+
+        // Autocomplete promise
+        const autocompletePromise = data.autocomplete(focusedValue);
+
+        // Race the autocomplete and timeout promises
+        const filteredPromise = Promise.race([autocompletePromise, timeoutPromise]);
+
+        filteredPromise.then(filtered => {
+            // Send result back to Discord
+            interaction.respond(
+                filtered.map(choice => ({ name: choice[0], value: choice[1] }))
+            ).catch(error => {
+                console.error('Error responding to interaction:', error);
+            });
+        }).catch(error => {
+            console.error('Error in autocomplete or timeout:', error);
+        });
     },
     async execute(interaction) {
         const songInput = interaction.options.getString('song');
         const difficulty = interaction.options.getString('difficulty');
         if (!songInput.includes('|')) interaction.reply('Bad'); //TODO: Change this to standard error msg
-        const [uniqueId, lang] = songInput.split('|');
+        let [uniqueId, lang] = songInput.split('|');
+        lang = parseInt(lang);
         const res = taikodb.getLeaderboard(uniqueId, difficulty); //taiko DB query result
-        let string = `${data.getSongName(uniqueId, lang)} ${difficulty}\n`;
+        let desc = '';
         for (let i in res) {
             const crown = bot.crownIdToEmoji(res[i].BestCrown)
-            string += `${res[i].MyDonName}: ${crown}${res[i].BestScore}\n`
+            desc += `${i}. ${res[i].MyDonName}: ${crown}${res[i].BestScore}\n`
         }
-        interaction.reply(string);
+        const returnEmbed = {
+                    title: `${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}`,
+                    description: desc ,
+                    color: 15410003,
+                    author: {
+                        name: "Leaderboard"
+                    },
+                    timestamp: new Date().toISOString()
+                };
+        interaction.reply({ embeds: [returnEmbed] });
     },
 };
