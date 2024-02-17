@@ -11,7 +11,14 @@
   "dependencies": {
     "better-sqlite3": "^9.4.1",
     "discord.js": "^14.14.1",
-    "dotenv": "^16.4.4",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "module-alias": "^2.2.3"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@data": "./data.js",
+    "@taikodb": "./taikodb.js",
+    "@bot": "./bot.js",
+    "@botdb": "./botdb.js"
   }
 }

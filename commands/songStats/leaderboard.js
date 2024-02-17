@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
-const data = require('../../data.js');
-const taikodb = require('../../taikodb.js'); //TODO: remove this relative path shit
-const bot = require('../../bot.js');
+const data = require('@data');
+const taikodb = require('@taikodb');
+const bot = require('@bot');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('leaderboard')
