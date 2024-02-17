@@ -7,3 +7,13 @@ data/
 .DS_Store
 config.json
 node_modules/
+_content/
+_framework/
+css/
+images/*
+js/
+appsettings.json
+favicon.ico
+index.html
+style.overrides.css
+web.config
