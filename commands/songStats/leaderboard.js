@@ -91,7 +91,10 @@ module.exports = {
             desc += `${i}. ${res[i].MyDonName}: ${crown}${res[i].BestScore}\n`
         }
         //no results
-        if (res.length === 0) desc = 'No best score data (only clears are shown)';
+        if (res.length === 0) {
+            desc = 'No best score data';
+            if (difficulty === 5) desc += ' (Are you sure there is an ura fumen?)'
+        }
 
         //construct embed
         const returnEmbed = {
