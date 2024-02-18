@@ -1,0 +1,8 @@
+//TODO: Make this command
+        if (folderId !== -1) {
+          let folderLabel = 'フォルダー：';
+          if (lang === 1) {
+            folderLabel = "Folder: ";
+          }
+          desc = folderLabel + data.folderIdToName(folderId, lang) + '\n\n'; //TODO: Optimize this. THIS IS INEFFICIENT (Cache folder names)
+        }
