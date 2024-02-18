@@ -5,7 +5,6 @@
  */
 const wordlist = require('./data/datatable/wordlist.json');
 const musicinfo = require('./data/datatable/musicinfo.json');
-const eventfolderdata = requi
 
 const songs = {}; //uniqueId: {id, titles: [jp, en]}
 
@@ -118,10 +117,6 @@ const isSongPresent = (uniqueId) => {
  */
 const isLangInRange = (lang) => {
     return lang >= 0 && lang <=1 ;
-}
-
-const getEventSongs(folderId) {
-
 }
 
 module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange, getSongStars };
