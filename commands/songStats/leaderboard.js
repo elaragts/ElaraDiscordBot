@@ -84,11 +84,13 @@ module.exports = {
 
         //error checking done
         const res = taikodb.getLeaderboard(uniqueId, difficulty); //taiko DB query result
+        console.log(res);
         let desc = '';
         //iterate over taiko DB return value and create text for the embed ({i}. {player}: :crown:{score})
         for (let i in res) {
-            const crown = bot.crownIdToEmoji(res[i].BestCrown)
-            desc += `${i}. ${res[i].MyDonName}: ${crown}${res[i].BestScore}\n`
+            const crown = bot.crownIdToEmoji(res[i].BestCrown);
+            const rank = bot.rankIdToEmoji(res[i].BestScoreRank - 2);
+            desc += `${i}. ${res[i].MyDonName}: ${crown}${rank}${res[i].BestScore}\n`
         }
         //no results
         if (res.length === 0) {

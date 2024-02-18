@@ -4,7 +4,7 @@
  * Helper functions related to discord
  */
 
-const { failEmojiId, clearEmojiId, FCEmojiId, APEmojiId, easyEmojiId, normalEmojiId, hardEmojiId, oniEmojiId, uraEmojiId } = require('./config.json');
+const { failEmojiId, clearEmojiId, FCEmojiId, APEmojiId, easyEmojiId, normalEmojiId, hardEmojiId, oniEmojiId, uraEmojiId, rank0EmojiId, rank1EmojiId, rank2EmojiId, rank3EmojiId, rank4EmojiId, rank5EmojiId, rank6EmojiId } = require('./config.json');
 
 let ongoingLinks = new Set(); //Array of Discord user IDs of people trying to link their account
 
@@ -118,4 +118,17 @@ const difficultyToEmoji = (difficultyId) => {
     }
 }
 
-module.exports = { ongoingLinks, replyWithErrorMessage, editReplyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji }
+const rankIdToEmoji = (rankId) => {
+  switch (rankId) {
+    case 0: return rank0EmojiId;
+    case 1: return rank1EmojiId;
+    case 2: return rank2EmojiId;
+    case 3: return rank3EmojiId;
+    case 4: return rank4EmojiId;
+    case 5: return rank5EmojiId;
+    case 6: return rank6EmojiId;
+    default: return '';
+  }
+}
+
+module.exports = { ongoingLinks, replyWithErrorMessage, editReplyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji, rankIdToEmoji }

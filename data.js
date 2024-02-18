@@ -5,7 +5,7 @@
  */
 const wordlist = require('./data/datatable/wordlist.json');
 const musicinfo = require('./data/datatable/musicinfo.json');
-
+const eventfolderdata = require('./data/event_folder_data.json');
 const songs = {}; //uniqueId: {id, titles: [jp, en]}
 
 
@@ -101,6 +101,15 @@ const getSongStars = (uniqueId, difficulty) => {
   return songs[uniqueId].difficulty[difficulty - 1];
 }
 
+const getEventSongs = (folderId) => {
+  for (let i of eventfolderdata) {
+    if (i.folderId == folderId) {
+      return i.songNo;
+    }
+  }
+  return -1;
+}
+
 /**
  * Returns if song with uniqueId is present in song list
  * @param uniqueId
@@ -119,4 +128,4 @@ const isLangInRange = (lang) => {
     return lang >= 0 && lang <=1 ;
 }
 
-module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange, getSongStars };
+module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange, getSongStars, getEventSongs };
