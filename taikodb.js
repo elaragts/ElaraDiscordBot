@@ -8,7 +8,7 @@ const Database = require('better-sqlite3');
 const db = new Database('./taiko.db3', { readonly: true });
 
 //statements
-const lb = db.prepare('SELECT ud.MyDonName, sbd.BestScore, sbd.BestCrown FROM SongBestData sbd INNER JOIN UserData ud ON sbd.Baid = ud.Baid WHERE SongID = ? AND Difficulty = ? ORDER BY sbd.BestScore DESC LIMIT 10')
+const lb = db.prepare('SELECT ud.MyDonName, sbd.BestScore, sbd.BestCrown, sbd.BestScoreRank FROM SongBestData sbd INNER JOIN UserData ud ON sbd.Baid = ud.Baid WHERE SongID = ? AND Difficulty = ? ORDER BY sbd.BestScore DESC LIMIT 10')
 const selectBaidFromAccessCode = db.prepare('SELECT Baid FROM Card WHERE AccessCode = ?').pluck();
 
 const getLeaderboard = (uniqueId, difficulty) => {
