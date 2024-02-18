@@ -5,29 +5,39 @@
  */
 const wordlist = require('./data/datatable/wordlist.json');
 const musicinfo = require('./data/datatable/musicinfo.json');
+const eventfolderdata = requi
 
 const songs = {}; //uniqueId: {id, titles: [jp, en]}
 
-/**
- * Gets song's uniqueId given Id
- * @param id
- * @returns {number|*}
- */
-const getUniqueSongIdFromId = (id) => {
-    for (let i in musicinfo.items) {
-        if (musicinfo.items[i].id === id) return musicinfo.items[i].uniqueId;
-    }
-    return -1;
+
+//create song object
+const getMusicInfoFromId = (id) => {
+  for (let i in musicinfo.items) {
+      if (musicinfo.items[i].id === id) {
+          return [
+              musicinfo.items[i].uniqueId,
+              [
+                  musicinfo.items[i].starEasy,
+                  musicinfo.items[i].starNormal,
+                  musicinfo.items[i].starHard,
+                  musicinfo.items[i].starMania,
+                  musicinfo.items[i].starUra,
+              ],
+              musicinfo.items[i].genreNo
+          ]
+      }
+  }
+  return [-1,[0,0,0,0,0],-1]; //probably dumb
 }
 
 //create song object
 for (let i in wordlist.items) {
-    if (wordlist.items[i].key.startsWith('song') && !wordlist.items[i].key.startsWith('song_sub') && !wordlist.items[i].key.startsWith('song_detail')) {
-        const id = wordlist.items[i].key.slice(5); //remove song_ from id
-        const uniqueId = getUniqueSongIdFromId(id);
-        if (uniqueId in songs) continue;
-        songs[uniqueId] = {'id': id, titles : [wordlist.items[i].japaneseText, wordlist.items[i].englishUsText] };
-    }
+  if (wordlist.items[i].key.startsWith('song') && !wordlist.items[i].key.startsWith('song_sub') && !wordlist.items[i].key.startsWith('song_detail')) {
+      const id = wordlist.items[i].key.slice(5); //remove song_ from id
+      const [uniqueId, difficulty, genreNo] = getMusicInfoFromId(id);
+      if (uniqueId in songs) continue;
+      songs[uniqueId] = {'id': id, titles : [wordlist.items[i].japaneseText, wordlist.items[i].englishUsText], 'difficulty' : difficulty, 'genreNo' : genreNo };
+  }
 }
 
 /**
@@ -87,6 +97,11 @@ const getSongName = (uniqueId, lang) => {
     return songs[uniqueId].titles[lang];
 }
 
+const getSongStars = (uniqueId, difficulty) => {
+  if (!(uniqueId in songs)) throw new Error("Song not found!");
+  return songs[uniqueId].difficulty[difficulty - 1];
+}
+
 /**
  * Returns if song with uniqueId is present in song list
  * @param uniqueId
@@ -105,4 +120,8 @@ const isLangInRange = (lang) => {
     return lang >= 0 && lang <=1 ;
 }
 
-module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange };
+const getEventSongs(folderId) {
+
+}
+
+module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange, getSongStars };

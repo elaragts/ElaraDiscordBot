@@ -92,13 +92,16 @@ module.exports = {
         }
         //no results
         if (res.length === 0) {
+          if (data.getSongStars(uniqueId, difficulty) === 0) {
+            desc = 'This difficulty does not exist.';
+          } else {
             desc = 'No best score data';
-            if (difficulty === 5) desc += ' (Are you sure there is an ura fumen?)'
+          }
         }
 
         //construct embed
         const returnEmbed = {
-                title: `${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}`,
+                title: `${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
                 description: desc ,
                 color: 15410003,
                 author: {
