@@ -86,13 +86,7 @@ module.exports = {
         const res = taikodb.getLeaderboard(uniqueId, difficulty); //taiko DB query result
         let desc = '';
         let folderId = data.getEventFromSong(uniqueId);
-        if (folderId !== -1) {
-          let folderLabel = 'フォルダー：';
-          if (lang === 1) {
-            folderLabel = "Folder: ";
-          }
-          desc = folderLabel + data.folderIdToName(folderId, lang) + '\n\n';
-        }
+
         //iterate over taiko DB return value and create text for the embed ({i}. {player}: :crown:{score})
         for (let i in res) {
             const crown = bot.crownIdToEmoji(res[i].BestCrown);

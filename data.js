@@ -129,7 +129,6 @@ const getEventFromSong = (uniqueId) => {
 const folderIdToName = (folderId, lang) => {
   if (!isEventFolderPresent) throw new Error("Event folder not found!");
   if (!isLangInRange(lang)) throw new Error("Lang out of range!");
-  let folderName = '';
   for (let i of eventfolderdata) {
     if (i.folderId === folderId) {
       for (let j of wordlist.items) {
