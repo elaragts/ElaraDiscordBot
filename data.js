@@ -126,6 +126,7 @@ const getEventFromSong = (uniqueId) => {
   return folder;
 }
 
+//Converts folder id to name with language.
 const folderIdToName = (folderId, lang) => {
   if (!isEventFolderPresent) throw new Error("Event folder not found!");
   if (!isLangInRange(lang)) throw new Error("Lang out of range!");
