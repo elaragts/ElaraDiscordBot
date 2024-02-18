@@ -6,6 +6,8 @@
 
 const { failEmojiId, clearEmojiId, FCEmojiId, APEmojiId, easyEmojiId, normalEmojiId, hardEmojiId, oniEmojiId, uraEmojiId } = require('./config.json');
 
+let ongoingLinks = new Set(); //Array of Discord user IDs of people trying to link their account
+
 const handleChatInputCommand = async (interaction) => {
     const command = interaction.client.commands.get(interaction.commandName);
 
@@ -25,7 +27,40 @@ const handleChatInputCommand = async (interaction) => {
         }
     }
 }
+// this works but better solution found (didn't delete cuz might come in handy later)
 
+// const receiveAccessCode = (user) => {
+//     // Return a new Promise
+//     return new Promise((resolve, reject) => {
+//         if (!user || !user.createDM) {
+//             reject(new Error('Invalid user object.'));
+//         }
+//         user.send("You have initiated a linking process. Respond to this message with your AccessCode within a minute.").catch(e => {
+//             reject('Unable to send DM to user. Check your privacy settings')
+//         })
+//         // Create a DM channel with the user
+//         user.createDM().then(dmChannel => {
+//             // Set up a filter to ensure we only collect messages from this user
+//             const filter = m => m.author.id === user.id;
+//             // Create a message collector in the DM channel, collecting only 1 message with a 5-minute timeout
+//             const collector = dmChannel.createMessageCollector({ filter, max: 1, time: 60000 });
+//
+//             collector.on('collect', m => {
+//                 resolve(m.content);
+//             });
+//
+//             collector.on('end', collected => {
+//                 // If no messages were collected, reject the promise
+//                 if (collected.size === 0) {
+//                     reject(new Error('No messages were collected.'));
+//                 }
+//             });
+//         }).catch(err => {
+//             console.log(err);
+//             reject('internal error.');
+//         });
+//     });
+// }
 const handleAutocomplete = async (interaction) => {
     const command = interaction.client.commands.get(interaction.commandName);
     if (!command) {
@@ -51,6 +86,18 @@ const replyWithErrorMessage = async (interaction, author, reason) => {
     await interaction.reply({embeds: [errorEmbed], ephemeral: true});
 }
 
+const editReplyWithErrorMessage = async (interaction, author, reason) => {
+    const errorEmbed = {
+        title: 'Error',
+        description: reason,
+        color: 13369344,
+        author: {
+            name: author
+        }
+    };
+    await interaction.editReply({embeds: [errorEmbed], ephemeral: true});
+}
+
 const crownIdToEmoji = (crownId) => {
     switch (crownId) {
         case 1: return clearEmojiId;
@@ -71,4 +118,4 @@ const difficultyToEmoji = (difficultyId) => {
     }
 }
 
-module.exports = { replyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji }
+module.exports = { ongoingLinks, replyWithErrorMessage, editReplyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji }
