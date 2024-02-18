@@ -13,20 +13,32 @@ const songs = {}; //uniqueId: {id, titles: [jp, en]}
  * @param id
  * @returns {number|*}
  */
-const getUniqueSongIdFromId = (id) => {
+const getMusicInfoFromId = (id) => {
     for (let i in musicinfo.items) {
-        if (musicinfo.items[i].id === id) return musicinfo.items[i].uniqueId;
+        if (musicinfo.items[i].id === id) {
+            return [
+                musicinfo.items[i].uniqueId,
+                [
+                    musicinfo.items[i].starEasy,
+                    musicinfo.items[i].starNormal,
+                    musicinfo.items[i].starHard,
+                    musicinfo.items[i].starMania,
+                    musicinfo.items[i].starUra,
+                ],
+                musicinfo.items[i].genreNo
+            ]
+        }
     }
-    return -1;
+    return [-1,[0,0,0,0,0],-1]; //probably dumb
 }
 
 //create song object
 for (let i in wordlist.items) {
     if (wordlist.items[i].key.startsWith('song') && !wordlist.items[i].key.startsWith('song_sub') && !wordlist.items[i].key.startsWith('song_detail')) {
         const id = wordlist.items[i].key.slice(5); //remove song_ from id
-        const uniqueId = getUniqueSongIdFromId(id);
+        const [uniqueId, difficulty, genreNo] = getMusicInfoFromId(id);
         if (uniqueId in songs) continue;
-        songs[uniqueId] = {'id': id, titles : [wordlist.items[i].japaneseText, wordlist.items[i].englishUsText] };
+        songs[uniqueId] = {'id': id, titles : [wordlist.items[i].japaneseText, wordlist.items[i].englishUsText], 'difficulty' : difficulty, 'genreNo' : genreNo };
     }
 }
 
