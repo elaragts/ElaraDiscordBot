@@ -107,6 +107,7 @@ const getEventSongs = (folderId) => {
       return i.songNo;
     }
   }
+  throw new Error("Folder not found!");
   return -1;
 }
 
@@ -128,4 +129,13 @@ const isLangInRange = (lang) => {
     return lang >= 0 && lang <=1 ;
 }
 
+const isSongInEvent = (uniqueId, folderId) => {
+  if (!(uniqueId in songs)) throw new Error("Song not found!");
+  let index = 0;
+  for (let i in eventfolderdata) {
+    if (eventfolderdata[i].folderId == folderId) index = i;
+  }
+
+  return eventfolderdata[index].songNo.includes(uniqueId);
+}
 module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange, getSongStars, getEventSongs };
