@@ -108,7 +108,40 @@ const getEventSongs = (folderId) => {
     }
   }
   throw new Error("Folder not found!");
-  return -1;
+}
+
+const getEventFromSong = (uniqueId) => {
+  if (!(uniqueId in songs)) throw new Error("Song not found!");
+  let folder = -1;
+  for (let i in eventfolderdata) {
+    if (isSongInEvent(uniqueId, eventfolderdata[i].folderId)) folder = eventfolderdata[i].folderId;
+  }
+
+  //Priority event folders
+  if (isSongInEvent(uniqueId, 10)) folder = 10;
+  else if (isSongInEvent(uniqueId, 8)) folder = 8;
+  else if (isSongInEvent(uniqueId, 9)) folder = 9;
+  else if (isSongInEvent(uniqueId, 3)) folder = 3;
+  
+  return folder;
+}
+
+const folderIdToName = (folderId, lang) => {
+  if (!isEventFolderPresent) throw new Error("Event folder not found!");
+  if (!isLangInRange(lang)) throw new Error("Lang out of range!");
+  let folderName = '';
+  for (let i of eventfolderdata) {
+    if (i.folderId === folderId) {
+      for (let j of wordlist.items) {
+        if (j.key === "folder_event" + folderId) {
+          switch (lang) {
+            case 0: return j.japaneseText;
+            case 1: return j.englishUsText;
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -131,11 +164,20 @@ const isLangInRange = (lang) => {
 
 const isSongInEvent = (uniqueId, folderId) => {
   if (!(uniqueId in songs)) throw new Error("Song not found!");
+  if (!isEventFolderPresent) throw new Error("Event folder not found!");
   let index = 0;
   for (let i in eventfolderdata) {
-    if (eventfolderdata[i].folderId == folderId) index = i;
+    if (eventfolderdata[i].folderId === folderId) index = i;
   }
 
-  return eventfolderdata[index].songNo.includes(uniqueId);
+  return eventfolderdata[index].songNo.includes(parseInt(uniqueId));
 }
-module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange, getSongStars, getEventSongs };
+
+const isEventFolderPresent = (folderId) => {
+  for (let i of eventfolderdata) {
+    if (i.folderId === folderId) return true;
+  }
+
+  return false;
+}
+module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange, getSongStars, getEventSongs, isSongInEvent, getEventFromSong, folderIdToName };
