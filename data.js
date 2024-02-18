@@ -68,7 +68,6 @@ for (let i in wordlist.items) {
             if (isSongInEvent(uniqueId, eventfolderdata[i].folderId)) folder = eventfolderdata[i].folderId;
         }
 
-
         //Priority event folders
         if (isSongInEvent(uniqueId, 10)) folder = 10;
         else if (isSongInEvent(uniqueId, 8)) folder = 8;
