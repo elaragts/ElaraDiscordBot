@@ -8,9 +8,9 @@ module.exports = {
         .setDescription('Song leaderboard')
         .addStringOption(option =>
             option.setName('song')
-            .setDescription('Song name')
-            .setRequired(true)
-            .setAutocomplete(true))
+                .setDescription('Song name')
+                .setRequired(true)
+                .setAutocomplete(true))
         .addStringOption(option =>
             option.setName('difficulty')
                 .setDescription('Difficulty of the map')
@@ -19,10 +19,10 @@ module.exports = {
                     { name: 'かんたん/Easy', value: '1' },
                     { name: 'ふつう/Normal', value: '2' },
                     { name: 'むずかしい/Hard', value: '3' },
-                    { name: 'おに/Oni', value: '4'},
-                    { name: 'おに (裏)/Ura Oni', value: '5'}
+                    { name: 'おに/Oni', value: '4' },
+                    { name: 'おに (裏)/Ura Oni', value: '5' }
                 )
-)
+        )
     ,
     //handle autocomplete interaction
     async autocomplete(interaction) {
@@ -69,13 +69,16 @@ module.exports = {
             await interaction.deferReply();
             let searchResult = data.searchSongs(songInput);
             if (searchResult.length === 0) {
-                await interaction.editReply({embeds: [{
+                await interaction.editReply({
+                    embeds: [{
                         title: 'Error',
                         description: `Song ${songInput} not found!`,
                         color: 13369344,
                         author: {
                             name: 'Leaderboard'
-                        }}]});
+                        }
+                    }]
+                });
                 return;
             }
             [uniqueId, lang] = searchResult;
@@ -95,23 +98,23 @@ module.exports = {
         }
         //no results
         if (res.length === 0) {
-          if (data.getSongStars(uniqueId, difficulty) === 0) {
-            desc = 'This difficulty does not exist.';
-          } else {
-            desc = 'No best score data';
-          }
+            if (data.getSongStars(uniqueId, difficulty) === 0) {
+                desc = 'This difficulty does not exist.';
+            } else {
+                desc = 'No best score data';
+            }
         }
 
         //construct embed
         const returnEmbed = {
-                title: `${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
-                description: desc ,
-                color: 15410003,
-                author: {
-                    name: "Leaderboard"
-                },
-                timestamp: new Date().toISOString()
-            };
+            title: `${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
+            description: desc,
+            color: 15410003,
+            author: {
+                name: "Leaderboard"
+            },
+            timestamp: new Date().toISOString()
+        };
         await interaction.editReply({ embeds: [returnEmbed] });
     },
 };

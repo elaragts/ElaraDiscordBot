@@ -83,7 +83,7 @@ const replyWithErrorMessage = async (interaction, author, reason) => {
             name: author
         }
     };
-    await interaction.reply({embeds: [errorEmbed], ephemeral: true});
+    await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 }
 
 const editReplyWithErrorMessage = async (interaction, author, reason) => {
@@ -95,7 +95,7 @@ const editReplyWithErrorMessage = async (interaction, author, reason) => {
             name: author
         }
     };
-    await interaction.editReply({embeds: [errorEmbed], ephemeral: true});
+    await interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
 }
 
 const crownIdToEmoji = (crownId) => {
@@ -119,16 +119,16 @@ const difficultyToEmoji = (difficultyId) => {
 }
 
 const rankIdToEmoji = (rankId) => {
-  switch (rankId) {
-    case 0: return rank0EmojiId;
-    case 1: return rank1EmojiId;
-    case 2: return rank2EmojiId;
-    case 3: return rank3EmojiId;
-    case 4: return rank4EmojiId;
-    case 5: return rank5EmojiId;
-    case 6: return rank6EmojiId;
-    default: return '';
-  }
+    switch (rankId) {
+        case 0: return rank0EmojiId;
+        case 1: return rank1EmojiId;
+        case 2: return rank2EmojiId;
+        case 3: return rank3EmojiId;
+        case 4: return rank4EmojiId;
+        case 5: return rank5EmojiId;
+        case 6: return rank6EmojiId;
+        default: return '';
+    }
 }
 
 module.exports = { ongoingLinks, replyWithErrorMessage, editReplyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji, rankIdToEmoji }
