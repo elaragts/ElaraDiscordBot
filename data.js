@@ -48,7 +48,7 @@ const getMusicInfoFromId = (id) => {
 }
 
 const isSongInEvent = (uniqueId, folderId) => {
-    checkUniqueId(uniqueId, 'isSongInEvent');
+    if (initialized) checkUniqueId(uniqueId, 'isSongInEvent');
     checkUniqueId(uniqueId, 'isSongInEvent');
     checkEventFolder(folderId, '');
     let index = 0;
