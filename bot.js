@@ -3,7 +3,7 @@
  *
  * Helper functions related to discord
  */
-
+const data = require('@data');
 const { failEmojiId, clearEmojiId, FCEmojiId, APEmojiId, easyEmojiId, normalEmojiId, hardEmojiId, oniEmojiId, uraEmojiId, rank0EmojiId, rank1EmojiId, rank2EmojiId, rank3EmojiId, rank4EmojiId, rank5EmojiId, rank6EmojiId } = require('./config.json');
 
 let ongoingLinks = new Set(); //Array of Discord user IDs of people trying to link their account
@@ -61,6 +61,29 @@ const handleChatInputCommand = async (interaction) => {
 //         });
 //     });
 // }
+const returnAutocomplete = async (interaction) =>  {
+    const focusedValue = interaction.options.getFocused(); // Get query
+
+    // Timeout promise
+    const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve([]), 2500)); // 2.5 seconds
+
+    // Autocomplete promise
+    const autocompletePromise = data.autocomplete(focusedValue);
+
+    // Race the autocomplete and timeout promises
+    const filteredPromise = Promise.race([autocompletePromise, timeoutPromise]);
+
+    filteredPromise.then(filtered => {
+      // Send result back to Discord
+      interaction.respond(
+        filtered.map(choice => ({ name: choice[0], value: choice[1] }))
+      ).catch(error => {
+        console.error('Error responding to interaction:', error);
+      });
+    }).catch(error => {
+      console.error('Error in autocomplete or timeout:', error);
+    });
+  }
 const handleAutocomplete = async (interaction) => {
     const command = interaction.client.commands.get(interaction.commandName);
     if (!command) {
@@ -131,4 +154,4 @@ const rankIdToEmoji = (rankId) => {
     }
 }
 
-module.exports = { ongoingLinks, replyWithErrorMessage, editReplyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji, rankIdToEmoji }
+module.exports = { ongoingLinks, replyWithErrorMessage, editReplyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji, rankIdToEmoji, returnAutocomplete }
