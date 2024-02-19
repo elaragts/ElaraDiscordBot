@@ -32,6 +32,7 @@ module.exports = {
         const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve([]), 2500)); // 2.5 seconds
 
         // Autocomplete promise
+        
         const autocompletePromise = data.autocomplete(focusedValue);
 
         // Race the autocomplete and timeout promises

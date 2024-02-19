@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const data = require('@data');
+const taikodb = require('@taikodb');
 const bot = require('@bot');
 module.exports = {
   data: new SlashCommandBuilder()
@@ -86,35 +87,49 @@ module.exports = {
     desc = '';
 
     if (data.getPapamamaFromSong(uniqueId)) {
-      switch (lang) {
-        case 0: lang += '**パパママサポート**\n'
-        case 1: lang += '**Helping Hand Mode**\n'
-      }
+      desc = '**パパママサポート**\n';
+      if (lang === 1) desc = '**Helping Hand Mode**\n';
     }
 
-    if (data.getBranchFromSong(uniqueId)[difficulty - 1]) lang += '**This difficulty contains diverge notes**\n'
+    if (data.getBranchFromSong(uniqueId)[difficulty - 1]) desc += '**This difficulty contains diverge notes**'
+    let fields = [];
 
-    switch (lang) {
-      case 0: lang += 'ジャンル：';
-      case 1: lang += 'Genre: ';
+    let genreLabel = 'ジャンル';
+    if(lang === 1) {
+      genreLabel = 'Genre';
     }
-    lang += data.genreNoToName(data.getGenreNoFromSong(uniqueId), lang) + '\n';
+    fields.push({
+      name: genreLabel,
+      value: data.genreNoToName(data.getGenreNoFromSong(uniqueId), lang)
+    });
     
     let folderId = data.getEventFromSong(uniqueId);
     if (folderId !== -1) {
-      let folderLabel = 'フォルダー：';
+      let folderLabel = 'フォルダー';
       if (lang === 1) {
-        folderLabel = "Folder: ";
+        folderLabel = "Folder";
       }
-      desc += folderLabel + data.folderIdToName(folderId, lang) + '\n'; //TODO: Optimize this. THIS IS INEFFICIENT (Cache folder names)
+      fields.push({
+        name: folderLabel,
+        value: data.folderIdToName(folderId, lang)
+      });
     }
 
-    desc += 'Highest Combo: ' + data.getNoteCountFromSong(uniqueId);
-    desc += 'Highest Score: ' + data.getHighestScoreFromSong(uniqueId);
+    fields.push({
+      name: 'Highest Combo',
+      value: data.getNoteCountFromSong(uniqueId)[difficulty - 1]
+    });
+    fields.push({
+      name: 'Highest Score',
+      value: data.getHighestScoreFromSong(uniqueId)[difficulty - 1]
+    });
 
     if (data.getSongStars(uniqueId, difficulty) === 0) {
       desc = 'This difficulty does not exist.';
+      fields = [];
     }
+
+    
 
     const returnEmbed = {
       title: `${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
@@ -123,7 +138,8 @@ module.exports = {
       author: {
         name: "Song Statistics"
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      fields: fields
     };
     await interaction.editReply({ embeds: [returnEmbed] });
   },

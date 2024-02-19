@@ -6,7 +6,6 @@
 const wordlist = require('./data/datatable/wordlist.json');
 const musicinfo = require('./data/datatable/musicinfo.json');
 const eventfolderdata = require('./data/event_folder_data.json');
-const { data } = require('./commands/songStats/songstats');
 const songs = {}; //uniqueId: {id, titles: [jp, en]}
 var initialized = false;
 
