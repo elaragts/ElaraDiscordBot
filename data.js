@@ -6,6 +6,7 @@
 const wordlist = require('./data/datatable/wordlist.json');
 const musicinfo = require('./data/datatable/musicinfo.json');
 const eventfolderdata = require('./data/event_folder_data.json');
+const { data } = require('./commands/songStats/songstats');
 const songs = {}; //uniqueId: {id, titles: [jp, en]}
 var initialized = false;
 
@@ -22,8 +23,8 @@ const checkLang = (lang, location) => {
     if (!isLangInRange(lang)) throw new Error("Lang out of range! (lang: " + lang + ", location: " + location + ")");
 }
 
-const checkGenreId = (genreId, location) => {
-    if (!isGenreInRange(genreId)) throw new Error("GenreId out of range! (genreNo: " + genreNo + ", location: " + location + ")");
+const checkGenreNo = (genreNo, location) => {
+    if (!isGenreInRange(genreNo)) throw new Error("GenreNo out of range! (genreNo: " + genreNo + ", location: " + location + ")");
 }
 
 //create song object
@@ -40,7 +41,28 @@ const getMusicInfoFromId = (id) => {
                     musicinfo.items[i].starUra,
                 ],
                 musicinfo.items[i].genreNo,
-                musicinfo.items[i].papamama
+                musicinfo.items[i].papamama,
+                [
+                    musicinfo.items[i].branchEasy,
+                    musicinfo.items[i].branchNormal,
+                    musicinfo.items[i].branchHard,
+                    musicinfo.items[i].branchMania,
+                    musicinfo.items[i].branchUra
+                ],
+                [
+                    musicinfo.items[i].easyOnpuNum,
+                    musicinfo.items[i].normalOnpuNum,
+                    musicinfo.items[i].hardOnpuNum,
+                    musicinfo.items[i].maniaOnpuNum,
+                    musicinfo.items[i].uraOnpuNum
+                ],
+                [
+                    musicinfo.items[i].shinutiScoreEasy,
+                    musicinfo.items[i].shinutiScoreNormal,
+                    musicinfo.items[i].shinutiScoreHard,
+                    musicinfo.items[i].shinutiScoreMania,
+                    musicinfo.items[i].shinutiScoreUra
+                ]
             ]
         }
     }
@@ -81,7 +103,7 @@ const isEventFolderPresent = (folderId) => {
 for (let i in wordlist.items) {
     if (wordlist.items[i].key.startsWith('song') && !wordlist.items[i].key.startsWith('song_sub') && !wordlist.items[i].key.startsWith('song_detail')) {
         const id = wordlist.items[i].key.slice(5); //remove song_ from id
-        const [uniqueId, difficulty, genreNo, papamama] = getMusicInfoFromId(id);
+        const [uniqueId, difficulty, genreNo, papamama, branch, noteCount, highestScore] = getMusicInfoFromId(id);
         if (uniqueId in songs) continue;
         let folder = -1;
         for (let i in eventfolderdata) {
@@ -93,7 +115,18 @@ for (let i in wordlist.items) {
         else if (isSongInEvent(uniqueId, 8)) folder = 8;
         else if (isSongInEvent(uniqueId, 9)) folder = 9;
         else if (isSongInEvent(uniqueId, 3)) folder = 3;
-        songs[uniqueId] = { 'id': id, titles: [wordlist.items[i].japaneseText, wordlist.items[i].englishUsText], 'difficulty': difficulty, 'genreNo': genreNo, 'folder': folder };
+        songs[uniqueId] = {
+            'id': id,
+            titles: [wordlist.items[i].japaneseText,
+            wordlist.items[i].englishUsText],
+            'difficulty': difficulty,
+            'genreNo': genreNo,
+            'folder': folder,
+            'papamama': papamama,
+            'branch': branch,
+            'noteCount': noteCount,
+            'highestScore': highestScore
+        };
     }
 }
 initialized = true;
@@ -165,6 +198,31 @@ const getEventFromSong = (uniqueId) => {
     return songs[uniqueId].folder;
 }
 
+const getPapamamaFromSong = (uniqueId) => {
+    checkUniqueId(uniqueId, 'getPapamamaFromSong');
+    return songs[uniqueId].papamama;
+}
+
+const getBranchFromSong = (uniqueId) => {
+    checkUniqueId(uniqueId, 'getBranchFromSong');
+    return songs[uniqueId].branch;
+}
+
+const getNoteCountFromSong = (uniqueId) => {
+    checkUniqueId(uniqueId, 'getNoteCountFromSong');
+    return songs[uniqueId].noteCount;
+}
+
+const getHighestScoreFromSong = (uniqueId) => {
+    checkUniqueId(uniqueId, 'getHighestScoreFromSong');
+    return songs[uniqueId].highestScore;
+}
+
+const getGenreNoFromSong = (uniqueId) => {
+    checkUniqueId(uniqueId, 'getGenreNoFromSong');
+    return songs[uniqueId].genreNo;
+}
+
 //Converts folder id to name with language.
 const folderIdToName = (folderId, lang) => {
     checkEventFolder(folderId, 'folderIdToName');
@@ -183,11 +241,11 @@ const folderIdToName = (folderId, lang) => {
     }
 }
 
-const genreIdToName = (genreId, lang) => {
-    checkGenreId(genreId, 'genreIdToName');
-    checkLang(lang, 'genreIdToName')
+const genreNoToName = (genreNo, lang) => {
+    checkGenreNo(genreNo, 'genreNoToName');
+    checkLang(lang, 'genreNoToName')
     switch (lang) {
-        case 0: switch (genreId) {
+        case 0: switch (genreNo) {
             case 0: return 'ポップス'
             case 1: return 'アニメ'
             case 2: return 'キッズ'
@@ -197,7 +255,7 @@ const genreIdToName = (genreId, lang) => {
             case 6: return 'バラエティ'
             case 7: return 'クラシック'
         }
-        case 1: switch (genreId) {
+        case 1: switch (genreNo) {
             case 0: return 'POP'
             case 1: return 'Anime'
             case 2: return 'Kids\''
@@ -231,4 +289,23 @@ const isLangInRange = (lang) => {
 const isGenreInRange = (genreNo) => {
     return genreNo >= 0 && genreNo <= 7;
 }
-module.exports = { searchSongs, autocomplete, getSongName, isSongPresent, isLangInRange, getSongStars, getEventSongs, isSongInEvent, getEventFromSong, folderIdToName, isGenreInRange, isEventFolderPresent, genreIdToName };
+module.exports = {
+    searchSongs,
+    autocomplete,
+    getSongName,
+    isSongPresent,
+    isLangInRange,
+    getSongStars,
+    getEventSongs,
+    isSongInEvent,
+    getEventFromSong,
+    folderIdToName,
+    isGenreInRange,
+    isEventFolderPresent,
+    genreNoToName,
+    getBranchFromSong,
+    getGenreNoFromSong,
+    getHighestScoreFromSong,
+    getNoteCountFromSong,
+    getPapamamaFromSong
+};

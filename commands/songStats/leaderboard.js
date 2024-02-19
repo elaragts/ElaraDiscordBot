@@ -88,7 +88,6 @@ module.exports = {
         //error checking done
         const res = taikodb.getLeaderboard(uniqueId, difficulty); //taiko DB query result
         let desc = '';
-        let folderId = data.getEventFromSong(uniqueId);
 
         //iterate over taiko DB return value and create text for the embed ({i}. {player}: :crown:{score})
         for (let i in res) {
