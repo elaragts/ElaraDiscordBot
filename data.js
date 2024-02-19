@@ -50,7 +50,7 @@ const getMusicInfoFromId = (id) => {
 
 const isSongInEvent = (uniqueId, folderId) => {
     if (initialized) checkUniqueId(uniqueId, 'isSongInEvent');
-    checkEventFolder(folderId, '');
+    if (initialized) checkEventFolder(folderId, '');
     let index = 0;
     for (let i in eventfolderdata) {
         if (eventfolderdata[i].folderId === folderId) index = i;
@@ -60,7 +60,7 @@ const isSongInEvent = (uniqueId, folderId) => {
 }
 
 const getEventSongs = (folderId) => {
-    checkEventFolder(folderId, 'getEventSongs');
+    if (initialized) checkEventFolder(folderId, 'getEventSongs');
     for (let i of eventfolderdata) {
         if (i.folderId == folderId) {
             return i.songNo;
