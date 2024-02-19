@@ -44,13 +44,13 @@ const getMusicInfoFromId = (id) => {
             ]
         }
     }
-    throw new Error('Failed to load musicinfo for ' + id + '!');
+    console.warn('Failed to load musicinfo for ' + id + '!');
+    return [];
 }
 
 const isSongInEvent = (uniqueId, folderId) => {
     if (initialized) checkUniqueId(uniqueId, 'isSongInEvent');
-    checkUniqueId(uniqueId, 'isSongInEvent');
-    checkEventFolder(folderId, '');
+    if (initialized) checkEventFolder(folderId, '');
     let index = 0;
     for (let i in eventfolderdata) {
         if (eventfolderdata[i].folderId === folderId) index = i;
@@ -60,7 +60,7 @@ const isSongInEvent = (uniqueId, folderId) => {
 }
 
 const getEventSongs = (folderId) => {
-    checkEventFolder(folderId, 'getEventSongs');
+    if (initialized) checkEventFolder(folderId, 'getEventSongs');
     for (let i of eventfolderdata) {
         if (i.folderId == folderId) {
             return i.songNo;
@@ -81,7 +81,7 @@ const isEventFolderPresent = (folderId) => {
 for (let i in wordlist.items) {
     if (wordlist.items[i].key.startsWith('song') && !wordlist.items[i].key.startsWith('song_sub') && !wordlist.items[i].key.startsWith('song_detail')) {
         const id = wordlist.items[i].key.slice(5); //remove song_ from id
-        const [uniqueId, difficulty, genreNo] = getMusicInfoFromId(id);
+        const [uniqueId, difficulty, genreNo, papamama] = getMusicInfoFromId(id);
         if (uniqueId in songs) continue;
         let folder = -1;
         for (let i in eventfolderdata) {
