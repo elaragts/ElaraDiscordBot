@@ -100,7 +100,16 @@ module.exports = {
         judgement += `${bot.judgeIdToEmoji(1)}${song.OkCount}\n`;
         judgement += `${bot.judgeIdToEmoji(2)}${bot.judgeIdToEmoji(3)}${song.MissCount}`;
         pointsLabel = '点';
-        if (lang === 1) pointsLabel = ' points'
+        judgementLabel = '判定';
+        comboLabel = '最大コンボ数';
+        rendaLabel = '連打数';
+        if (lang === 1) {
+            pointsLabel = ' points';
+            judgementLabel = 'judgement';
+            comboLabel = 'Max Combo';
+            rendaLabel = 'Drumroll'
+
+        }
 
         //no results
         if (data.getSongStars(uniqueId, difficulty) === 0) {
@@ -108,7 +117,7 @@ module.exports = {
         }
         //construct embed
         const returnEmbed = {
-            title: `${user.username} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
+            title: `${song.MyDonName} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
             color: 15410003,
             description: `## ${desc}${song.Score}${pointsLabel}`,
             author: {
@@ -116,25 +125,16 @@ module.exports = {
             },
             timestamp: song.PlayTime,
             fields: [
-                // {
-                //     name: 'Score',
-                //     value: song.Score,
-                //     inline: true
-                // },
                 {
-                    name: 'Judgement',
+                    name: judgementLabel,
                     value: judgement,
                     inline: true
                 },
                 {
                     name: '',
-                    value: `**Max Combo:** ${song.ComboCount}\n**Drumroll Count:** ${song.DrumrollCount}`,
+                    value: `**${comboLabel}:** ${song.ComboCount}\n**${rendaLabel}:** ${song.DrumrollCount}`,
                     inline: true
                 }
-                // {
-                //     name: 'Drumroll Count',
-                //     value: song.DrumrollCount
-                // }
             ]
         };
         await interaction.editReply({ embeds: [returnEmbed] });
