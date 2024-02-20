@@ -65,7 +65,7 @@ const getMusicInfoFromId = (id) => {
             ]
         }
     }
-    console.warn('Failed to load musicinfo for ' + id + '!');
+    console.warn(`Failed to load musicinfo for ${id}`);
     return [];
 }
 
@@ -83,7 +83,7 @@ const isSongInEvent = (uniqueId, folderId) => {
 const getEventSongs = (folderId) => {
     if (initialized) checkEventFolder(folderId, 'getEventSongs');
     for (let i of eventfolderdata) {
-        if (i.folderId == folderId) {
+        if (i.folderId == folderId) { //Todo: Switch to ===
             return i.songNo;
         }
     }

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const data = require('@data');
 const taikodb = require('@taikodb');
+const botdb = require('@botdb');
 const bot = require('@bot');
 const autocomplete = bot.returnAutocomplete;
 module.exports = {
@@ -72,7 +73,11 @@ module.exports = {
         for (let i in res) {
             const crown = bot.crownIdToEmoji(res[i].BestCrown);
             const rank = bot.rankIdToEmoji(res[i].BestScoreRank - 2);
-            desc += `${i}. ${res[i].MyDonName}: ${crown}${rank}${res[i].BestScore}\n`
+            let name;
+            let accessCode = botdb.getDiscordIdFromAccessCode(res[i].AccessCode);
+            if (accessCode === undefined) name = res[i].MyDonName;
+            else name = `<@${accessCode}>`;
+            desc += `${i}. ${name}: ${crown}${rank}${res[i].BestScore}\n`
         }
         //no results
         if (res.length === 0) {
