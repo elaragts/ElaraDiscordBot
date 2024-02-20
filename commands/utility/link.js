@@ -7,7 +7,7 @@ const bot = require('@bot');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('link')
-        .setDescription('Links your discord account with a AccessCode')
+        .setDescription('Links your discord account to an AccessCode')
         .addStringOption(option =>
             option.setName('code')
                 .setDescription('accessCode you use to login to TaikoWeb')
