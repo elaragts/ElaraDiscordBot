@@ -49,16 +49,7 @@ module.exports = {
             await interaction.deferReply();
             let searchResult = data.searchSongs(songInput);
             if (searchResult.length === 0) {
-                await interaction.editReply({
-                    embeds: [{
-                        title: 'Error',
-                        description: `Song ${songInput} not found!`,
-                        color: 13369344,
-                        author: {
-                            name: 'Leaderboard'
-                        }
-                    }]
-                });
+                bot.EditReplyWithErrorMessage(`Song ${songInput} not found!`);
                 return;
             }
             [uniqueId, lang] = searchResult;

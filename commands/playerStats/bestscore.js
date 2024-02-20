@@ -69,22 +69,12 @@ module.exports = {
             await interaction.deferReply();
             let searchResult = data.searchSongs(songInput);
             if (searchResult.length === 0) {
-                await interaction.editReply({
-                    embeds: [{
-                        title: 'Error',
-                        description: `Song ${songInput} not found!`,
-                        color: 13369344,
-                        author: {
-                            name: 'Best Score'
-                        }
-                    }]
-                });
+                bot.EditReplyWithErrorMessage(`Song ${songInput} not found!`);
                 return;
             }
             [uniqueId, lang] = searchResult;
             lang = parseInt(lang);
         }
-        console.log(baid);
         const song = taikodb.getBestScore(uniqueId, difficulty, baid);
         if (song === undefined) {
             const returnEmbed = {
@@ -116,30 +106,32 @@ module.exports = {
         }
         //construct embed
         const returnEmbed = {
-            title: `${user.username} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
-            description: desc,
+            title: `${desc}${song.Score}点`,
             color: 15410003,
             author: {
-                name: "Best Score"
+                name: `${user.username} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`
             },
-            timestamp: new Date().toISOString(),
+            timestamp: song.PlayTime,
             fields: [
-                {
-                    name: 'Score',
-                    value: song.Score
-                },
+                // {
+                //     name: 'Score',
+                //     value: song.Score,
+                //     inline: true
+                // },
                 {
                     name: 'Judgement',
-                    value: judgement
+                    value: judgement,
+                    inline: true
                 },
                 {
-                    name: 'Highest Combo',
-                    value: song.ComboCount
-                },
-                {
-                    name: 'Drumroll Count',
-                    value: song.DrumrollCount
+                    name: '',
+                    value: `**Max Combo:** ${song.ComboCount}\n**Drumroll Count:** ${song.DrumrollCount}`,
+                    inline: true
                 }
+                // {
+                //     name: 'Drumroll Count',
+                //     value: song.DrumrollCount
+                // }
             ]
         };
         await interaction.editReply({ embeds: [returnEmbed] });
