@@ -99,6 +99,8 @@ module.exports = {
         judgement += `${bot.judgeIdToEmoji(0)}${song.GoodCount}\n`;
         judgement += `${bot.judgeIdToEmoji(1)}${song.OkCount}\n`;
         judgement += `${bot.judgeIdToEmoji(2)}${bot.judgeIdToEmoji(3)}${song.MissCount}`;
+        pointsLabel = '点';
+        if (lang === 1) pointsLabel = ' points'
 
         //no results
         if (data.getSongStars(uniqueId, difficulty) === 0) {
@@ -106,10 +108,11 @@ module.exports = {
         }
         //construct embed
         const returnEmbed = {
-            title: `${desc}${song.Score}点`,
+            title: `${user.username} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
             color: 15410003,
+            description: `## ${desc}${song.Score}${pointsLabel}`,
             author: {
-                name: `${user.username} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`
+                name: `Best Score`
             },
             timestamp: song.PlayTime,
             fields: [
