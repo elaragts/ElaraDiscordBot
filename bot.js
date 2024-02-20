@@ -4,7 +4,28 @@
  * Helper functions related to discord
  */
 const data = require('@data');
-const { failEmojiId, clearEmojiId, FCEmojiId, APEmojiId, easyEmojiId, normalEmojiId, hardEmojiId, oniEmojiId, uraEmojiId, rank0EmojiId, rank1EmojiId, rank2EmojiId, rank3EmojiId, rank4EmojiId, rank5EmojiId, rank6EmojiId } = require('./config.json');
+const {
+    failEmojiId,
+    clearEmojiId,
+    FCEmojiId,
+    APEmojiId,
+    easyEmojiId,
+    normalEmojiId,
+    hardEmojiId,
+    oniEmojiId,
+    uraEmojiId,
+    rank0EmojiId,
+    rank1EmojiId,
+    rank2EmojiId,
+    rank3EmojiId,
+    rank4EmojiId,
+    rank5EmojiId,
+    rank6EmojiId,
+    goodEmojiId,
+    okEmojiId,
+    bad1EmojiId,
+    bad2EmojiId
+} = require('./config.json');
 
 let ongoingLinks = new Set(); //Array of Discord user IDs of people trying to link their account
 
@@ -154,4 +175,24 @@ const rankIdToEmoji = (rankId) => {
     }
 }
 
-module.exports = { ongoingLinks, replyWithErrorMessage, editReplyWithErrorMessage, handleChatInputCommand, handleAutocomplete, crownIdToEmoji, difficultyToEmoji, rankIdToEmoji, returnAutocomplete }
+const judgeIdToEmoji = (judgeId) => {
+    switch (judgeId) {
+        case 0: return goodEmojiId;
+        case 1: return okEmojiId;
+        case 2: return bad1EmojiId;
+        case 3: return bad2EmojiId;
+    }
+}
+
+module.exports = {
+    ongoingLinks,
+    replyWithErrorMessage,
+    editReplyWithErrorMessage,
+    handleChatInputCommand,
+    handleAutocomplete,
+    crownIdToEmoji,
+    difficultyToEmoji,
+    rankIdToEmoji,
+    returnAutocomplete,
+    judgeIdToEmoji
+}

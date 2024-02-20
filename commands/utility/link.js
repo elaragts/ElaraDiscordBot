@@ -17,7 +17,7 @@ module.exports = {
         const user = interaction.user;
         const accessCode = interaction.options.getString('code');
         if (botdb.getAccessCodeFromDiscordId(user.id) !== undefined) {
-            await bot.replyWithErrorMessage(interaction, 'link', 'Your account is already linked to an AccessCode (use !unlink to unlink your account)')
+            await bot.replyWithErrorMessage(interaction, 'link', 'Your account is already linked to an AccessCode (use /unlink to unlink your account)')
             return;
         }
         if (botdb.getDiscordIdFromAccessCode(accessCode) !== undefined) {

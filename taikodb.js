@@ -11,7 +11,7 @@ const db = new Database('./taiko.db3', { readonly: true });
 const lb = db.prepare('SELECT ud.MyDonName, c.AccessCode, sbd.BestScore, sbd.BestCrown, sbd.BestScoreRank FROM SongBestData sbd INNER JOIN UserData ud ON sbd.Baid = ud.Baid INNER JOIN Card c ON sbd.Baid = c.Baid WHERE SongID = ? AND Difficulty = ? ORDER BY sbd.BestScore DESC LIMIT 10')
 const selectBaidFromAccessCode = db.prepare('SELECT Baid FROM Card WHERE AccessCode = ?').pluck();
 const selectBestScore = db.prepare('SELECT BestScore FROM SongBestData WHERE SongID = ? AND Difficulty = ? AND Baid = ?').pluck();
-const selectPlayByScore = db.prepare('SELECT ud.MyDonName, spd.Score, spd.ComboCount, spd.Crown, spd.ScoreRank, spd.DrumrollCount, spd.GoodCount, spd.MissCount, spd.OkCount, c.AccessCode FROM SongPlayData spd INNER JOIN UserData ud ON spd.Baid = ud.Baid INNER JOIN Card c ON spd.Baid = c.baid WHERE spd.SongID = ? AND spd.Difficulty = ? AND spd.Baid = ? AND spd.Score = ? ORDER BY spd.Id')
+const selectPlayByScore = db.prepare('SELECT ud.MyDonName, spd.PlayTime, spd.Score, spd.ComboCount, spd.Crown, spd.ScoreRank, spd.DrumrollCount, spd.GoodCount, spd.MissCount, spd.OkCount, c.AccessCode FROM SongPlayData spd INNER JOIN UserData ud ON spd.Baid = ud.Baid INNER JOIN Card c ON spd.Baid = c.baid WHERE spd.SongID = ? AND spd.Difficulty = ? AND spd.Baid = ? AND spd.Score = ? ORDER BY spd.Id')
 const getLeaderboard = (uniqueId, difficulty) => {
     return lb.all(uniqueId, difficulty);
 }
