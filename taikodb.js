@@ -17,13 +17,11 @@ const getLeaderboard = (uniqueId, difficulty) => {
 }
 
 const getBestScore = (uniqueId, difficulty, Baid) => {
-    const score = selectBestScore.get(uniqueId, difficulty, Baid).BestScore;
+    const score = selectBestScore.get(uniqueId, difficulty, Baid);
     if (score === undefined) return undefined;
-    return selectPlayByScore.get(uniqueId, difficulty, Baid, score);
-}
-
-const getBestCrown = (uniqueId, difficulty, Baid) => {
-    return selectBestScore.get(uniqueId, difficulty, Baid).BestCrown;
+    let ret = selectPlayByScore.get(uniqueId, difficulty, Baid, score.BestScore);
+    ret.crown = score.BestCrown;
+    return ret;
 }
 
 const getBaidFromAccessCode = (accessCode) => {
@@ -67,4 +65,4 @@ const difficultyIdToName = (difficultyId, lang) => {
             throw new Error(`Unknown language ${lang}`);
     }
 }
-module.exports = { getLeaderboard, getBaidFromAccessCode, difficultyIdToName, getBestScore, getBestCrown };
+module.exports = { getLeaderboard, getBaidFromAccessCode, difficultyIdToName, getBestScore };
