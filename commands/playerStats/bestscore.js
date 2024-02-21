@@ -91,10 +91,9 @@ module.exports = {
         }
 
         //error checking done
-        const crown = bot.crownIdToEmoji(taikodb.getBestCrown(uniqueId, difficulty, baid));
         const rank = bot.rankIdToEmoji(song.ScoreRank - 2);
+        const crown = bot.crownIdToEmoji(song.crown);
         desc = `${crown}${rank}`;
-
         let judgement = '';
         judgement += `${bot.judgeIdToEmoji(0)}${song.GoodCount}\n`;
         judgement += `${bot.judgeIdToEmoji(1)}${song.OkCount}\n`;
