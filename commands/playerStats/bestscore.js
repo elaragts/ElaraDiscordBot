@@ -91,7 +91,7 @@ module.exports = {
         }
 
         //error checking done
-        const crown = bot.crownIdToEmoji(song.Crown);
+        const crown = bot.crownIdToEmoji(taikodb.getBestCrown(uniqueId, difficulty, baid));
         const rank = bot.rankIdToEmoji(song.ScoreRank - 2);
         desc = `${crown}${rank}`;
 
