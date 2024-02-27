@@ -1,7 +1,7 @@
 WITH DifficultyCTE AS (SELECT Baid,
                               AchievementDisplayDifficulty AS NewDifficulty
                        FROM UserData
-                       WHERE Baid = ?
+                       WHERE Baid = @Baid
                        UNION
                        SELECT Baid,
                               CASE
@@ -9,7 +9,7 @@ WITH DifficultyCTE AS (SELECT Baid,
                                   ELSE AchievementDisplayDifficulty
                                   END AS NewDifficulty
                        FROM UserData
-                       WHERE Baid = ?
+                       WHERE Baid = @Baid
                          AND AchievementDisplayDifficulty = 5),
      AchievementPanel AS (SELECT s.Baid,
                                  BestScoreRank,
@@ -21,11 +21,11 @@ WITH DifficultyCTE AS (SELECT Baid,
                           GROUP BY s.Baid, BestScoreRank, BestCrown),
      PlayCount AS (SELECT Baid, COUNT(Baid) AS PlayCount
                    FROM SongPlayData
-                   WHERE Baid = ?),
+                   WHERE Baid = @Baid),
      Dan AS (SELECT Baid, MAX(DanId) AS DanId, ClearState
              FROM DanScoreData
              WHERE DanType = 1
-               AND Baid = ?
+               AND Baid = @Baid
                AND ClearState > 0)
 SELECT ud.MyDonName,
        ud.AchievementDisplayDifficulty,
@@ -65,4 +65,4 @@ FROM UserData ud
                      GROUP BY Baid) bcr ON ud.Baid = bcr.Baid
          INNER JOIN PlayCount pc ON ud.Baid = pc.Baid
          LEFT JOIN Dan d ON ud.Baid = d.Baid
-WHERE ud.Baid = ?;
+WHERE ud.Baid = @Baid;
