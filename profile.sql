@@ -21,10 +21,17 @@ WITH DifficultyCTE AS (SELECT Baid,
                           GROUP BY s.Baid, BestScoreRank, BestCrown),
      PlayCount AS (SELECT Baid, COUNT(Baid) AS PlayCount
                    FROM SongPlayData
-                   WHERE Baid = ?)
+                   WHERE Baid = ?),
+     Dan AS (SELECT Baid, MAX(DanId) AS DanId, ClearState
+             FROM DanScoreData
+             WHERE DanType = 1
+               AND Baid = ?
+               AND ClearState > 0)
 SELECT ud.MyDonName,
        ud.AchievementDisplayDifficulty,
        pc.PlayCount,
+       d.DanId,
+       d.ClearState,
        bsr.bestscorerank_1,
        bsr.bestscorerank_2,
        bsr.bestscorerank_3,
@@ -57,4 +64,5 @@ FROM UserData ud
                      WHERE BestCrown IS NOT NULL
                      GROUP BY Baid) bcr ON ud.Baid = bcr.Baid
          INNER JOIN PlayCount pc ON ud.Baid = pc.Baid
+         LEFT JOIN Dan d ON ud.Baid = d.Baid
 WHERE ud.Baid = ?;
