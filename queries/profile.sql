@@ -28,6 +28,7 @@ WITH DifficultyCTE AS (SELECT Baid,
                AND Baid = @Baid
                AND ClearState > 0)
 SELECT ud.MyDonName,
+       ud.Title,
        ud.AchievementDisplayDifficulty,
        pc.PlayCount,
        d.DanId,

@@ -3,15 +3,25 @@
  *
  * Functions related to querying the taiko db
  */
-
+const fs = require('fs');
+const path = require('path');
+const queries = path.join(__dirname, 'queries');
 const Database = require('better-sqlite3');
 const db = new Database('./taiko.db3', { readonly: true });
+const profileQuery = fs.readFileSync(path.join(queries, 'profile.sql'), 'utf8');
+const leaderboardQuery = fs.readFileSync(path.join(queries, 'leaderboard.sql'), 'utf8');
+const baidFromAccessCodeQuery = fs.readFileSync(path.join(queries, 'baidFromAccessCode.sql'), 'utf8');
+const bestScoreQuery = fs.readFileSync(path.join(queries, 'bestScore.sql'), 'utf8');
+const playByScoreQuery = fs.readFileSync(path.join(queries, 'playByScore.sql'), 'utf8');
+
 
 //statements
-const lb = db.prepare('SELECT ud.MyDonName, c.AccessCode, sbd.BestScore, sbd.BestCrown, sbd.BestScoreRank FROM SongBestData sbd INNER JOIN UserData ud ON sbd.Baid = ud.Baid INNER JOIN Card c ON sbd.Baid = c.Baid WHERE SongID = ? AND Difficulty = ? ORDER BY sbd.BestScore DESC LIMIT 10')
-const selectBaidFromAccessCode = db.prepare('SELECT Baid FROM Card WHERE AccessCode = ?').pluck();
-const selectBestScore = db.prepare('SELECT BestScore, BestCrown FROM SongBestData WHERE SongID = ? AND Difficulty = ? AND Baid = ?');
-const selectPlayByScore = db.prepare('SELECT ud.MyDonName, spd.PlayTime, spd.Score, spd.ComboCount, spd.Crown, spd.ScoreRank, spd.DrumrollCount, spd.GoodCount, spd.MissCount, spd.OkCount, c.AccessCode FROM SongPlayData spd INNER JOIN UserData ud ON spd.Baid = ud.Baid INNER JOIN Card c ON spd.Baid = c.baid WHERE spd.SongID = ? AND spd.Difficulty = ? AND spd.Baid = ? AND spd.Score = ? ORDER BY spd.Id')
+const lb = db.prepare(leaderboardQuery);
+const selectBaidFromAccessCode = db.prepare(baidFromAccessCodeQuery).pluck();
+const selectBestScore = db.prepare(bestScoreQuery);
+const selectPlayByScore = db.prepare(playByScoreQuery);
+const selectPlayerProfile = db.prepare(profileQuery);
+
 const getLeaderboard = (uniqueId, difficulty) => {
     return lb.all(uniqueId, difficulty);
 }
@@ -65,4 +75,8 @@ const difficultyIdToName = (difficultyId, lang) => {
             throw new Error(`Unknown language ${lang}`);
     }
 }
-module.exports = { getLeaderboard, getBaidFromAccessCode, difficultyIdToName, getBestScore };
+
+const getPlayerProfile = (Baid) => {
+    return selectPlayerProfile.get({ Baid: Baid });
+}
+module.exports = { getLeaderboard, getBaidFromAccessCode, difficultyIdToName, getBestScore, getPlayerProfile };
