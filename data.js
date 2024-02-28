@@ -267,6 +267,50 @@ const genreNoToName = (genreNo, lang) => {
     }
 }
 
+const danIdToName = (rankId) => {
+  switch(rankId) {
+    case 1:
+      return '五級';
+    case 2:
+      return '四級';
+    case 3:
+      return '三級';
+    case 4:
+      return '二級';
+    case 5:
+      return '一級';
+    case 6:
+      return '初段';
+    case 7:
+      return '二段';
+    case 8:
+      return '三段';
+    case 9:
+      return '四段';
+    case 10:
+      return '五段';
+    case 11:
+      return '六段';
+    case 12:
+      return '七段';
+    case 13:
+      return '八段';
+    case 14:
+      return '九段';
+    case 15:
+      return '十段';
+    case 16:
+      return '玄人';
+    case 17:
+      return '名人';
+    case 18:
+      return '超人';
+    case 19:
+      return '達人';
+    default:
+      return '';
+  }
+}
 /**
  * Returns if song with uniqueId is present in song list
  * @param uniqueId
@@ -306,5 +350,6 @@ module.exports = {
     getGenreNoFromSong,
     getHighestScoreFromSong,
     getNoteCountFromSong,
-    getPapamamaFromSong
+    getPapamamaFromSong,
+    danIdToName
 };

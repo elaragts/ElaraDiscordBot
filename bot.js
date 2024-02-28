@@ -24,7 +24,13 @@ const {
     goodEmojiId,
     okEmojiId,
     bad1EmojiId,
-    bad2EmojiId
+    bad2EmojiId,
+    dani1EmojiId,
+    dani2EmojiId,
+    dani3EmojiId,
+    dani4EmojiId,
+    dani5EmojiId,
+    dani6EmojiId
 } = require('./config.json');
 
 let ongoingLinks = new Set(); //Array of Discord user IDs of people trying to link their account
@@ -175,6 +181,24 @@ const rankIdToEmoji = (rankId) => {
     }
 }
 
+const daniClearStateToEmoji = (clearState) => {
+    switch (clearState) {
+        case 1:
+            return dani1EmojiId;
+        case 2:
+            return dani2EmojiId;
+        case 3:
+            return dani3EmojiId;
+        case 4:
+            return dani4EmojiId;
+        case 5:
+            return dani5EmojiId;
+        case 6:
+            return dani6EmojiId;
+        default:
+            return '';
+    }
+}
 const judgeIdToEmoji = (judgeId) => {
     switch (judgeId) {
         case 0: return goodEmojiId;
@@ -194,5 +218,6 @@ module.exports = {
     difficultyToEmoji,
     rankIdToEmoji,
     returnAutocomplete,
-    judgeIdToEmoji
+    judgeIdToEmoji,
+    daniClearStateToEmoji,
 }

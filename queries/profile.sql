@@ -41,9 +41,9 @@ SELECT ud.MyDonName,
        bsr.bestscorerank_6,
        bsr.bestscorerank_7,
        bsr.bestscorerank_8,
-       bcr.bestcrownrank_1,
-       bcr.bestcrownrank_2,
-       bcr.bestcrownrank_3
+       bcr.bestcrown_1,
+       bcr.bestcrown_2,
+       bcr.bestcrown_3
 FROM UserData ud
          INNER JOIN (SELECT Baid,
                             SUM(CASE WHEN BestScoreRank = 1 THEN Count ELSE 0 END) AS bestscorerank_1,
@@ -58,9 +58,9 @@ FROM UserData ud
                      WHERE BestScoreRank IS NOT NULL
                      GROUP BY Baid) bsr ON ud.Baid = bsr.Baid
          INNER JOIN (SELECT Baid,
-                            SUM(CASE WHEN BestCrown = 1 THEN Count ELSE 0 END) AS bestcrownrank_1,
-                            SUM(CASE WHEN BestCrown = 2 THEN Count ELSE 0 END) AS bestcrownrank_2,
-                            SUM(CASE WHEN BestCrown = 3 THEN Count ELSE 0 END) AS bestcrownrank_3
+                            SUM(CASE WHEN BestCrown = 1 THEN Count ELSE 0 END) AS bestcrown_1,
+                            SUM(CASE WHEN BestCrown = 2 THEN Count ELSE 0 END) AS bestcrown_2,
+                            SUM(CASE WHEN BestCrown = 3 THEN Count ELSE 0 END) AS bestcrown_3
                      FROM AchievementPanel
                      WHERE BestCrown IS NOT NULL
                      GROUP BY Baid) bcr ON ud.Baid = bcr.Baid
