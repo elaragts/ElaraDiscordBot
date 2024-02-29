@@ -74,24 +74,34 @@ async function createCompositeImage() {
     const ctx = canvas.getContext('2d');
 
     // Load your images
-    const bodymask = await loadImage('/Users/keitannunes/IdeaProjects/TaikoPSDiscordBot/sprites/masks/body-bodymask-0005.png');
-    const facemask = await loadImage('/Users/keitannunes/IdeaProjects/TaikoPSDiscordBot/sprites/masks/body-facemask-0005.png');
-    const body = await loadImage('/Users/keitannunes/IdeaProjects/TaikoPSDiscordBot/sprites/body/body-0005.png');
-    const face = await loadImage('/Users/keitannunes/IdeaProjects/TaikoPSDiscordBot/sprites/face/face-0005.png');
-    const head = await loadImage('/Users/keitannunes/IdeaProjects/TaikoPSDiscordBot/sprites/head/head-0005.png');
-    const puchi = await loadImage('/Users/keitannunes/IdeaProjects/TaikoPSDiscordBot/sprites/puchi/puchi-0005.png');
-    ctx.drawImage(bodymask, 0, 0);
-    ctx.globalCompositeOperation = 'source-in';
-    ctx.fillStyle = numberToColourMap[58]; // Replace 'colorA' with your actual color
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const bodymask = await loadImage('sprites/masks/body-bodymask-0005.png');
+    const facemask = await loadImage('sprites/masks/body-facemask-0005.png');
+    const body = await loadImage('sprites/body/body-0005.png');
+    const face = await loadImage('sprites/face/face-0005.png');
+    const head = await loadImage('sprites/head/head-0005.png');
+    const puchi = await loadImage('sprites/puchi/puchi-0005.png');
+    async function applyMaskAndColor(mask, color) {
+      const offscreenCanvas = createCanvas(width, height);
+      const offscreenCtx = offscreenCanvas.getContext('2d');
 
-    // Draw and color Mask B
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.drawImage(facemask, 0, 0);
-    ctx.globalCompositeOperation = 'source-in';
-    ctx.fillStyle = numberToColourMap[3]; // Replace 'colorB' with your actual color
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Draw the mask
+      offscreenCtx.drawImage(mask, 0, 0);
 
+      // Apply the color
+      offscreenCtx.globalCompositeOperation = 'source-in';
+      offscreenCtx.fillStyle = color;
+      offscreenCtx.fillRect(0, 0, width, height);
+
+      return offscreenCanvas;
+  }
+
+  // Create colored masks
+  const coloredBodyMask = await applyMaskAndColor(bodymask, numberToColourMap[58]);
+  const coloredFaceMask = await applyMaskAndColor(facemask, numberToColourMap[7]);
+
+  // Draw the colored masks onto the main canvas
+  ctx.drawImage(coloredBodyMask, 0, 0);
+  ctx.drawImage(coloredFaceMask, 0, 0);
     // Draw images on top
     ctx.globalCompositeOperation = 'source-over';
     ctx.drawImage(body, 0, 0);
