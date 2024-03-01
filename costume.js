@@ -86,6 +86,9 @@ const applyMaskAndColor = async (mask, color) => {
     return offscreenCanvas;
 }
 const createCostumeAvatar = async (costumeData, bodyColourId, faceColourId) => {
+    while (costumeData.length < 5) {
+        costumeData.push(0);
+    }
     const kigurumiId = costumeData[0];
     const headId = costumeData[1];
     const bodyId = costumeData[2];
