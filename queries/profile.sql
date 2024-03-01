@@ -11,7 +11,7 @@ WITH DifficultyCTE AS (SELECT Baid,
                        FROM UserData
                        WHERE Baid = @Baid
                          AND AchievementDisplayDifficulty = 5),
-     AchievementPanel AS (SELECT s.Baid,
+     AchievementPanelCTE AS (SELECT s.Baid,
                                  BestScoreRank,
                                  BestCrown,
                                  COUNT(s.Baid) AS Count
@@ -19,10 +19,10 @@ WITH DifficultyCTE AS (SELECT Baid,
                                    INNER JOIN DifficultyCTE d ON s.Baid = d.Baid
                               AND (s.Difficulty = d.NewDifficulty)
                           GROUP BY s.Baid, BestScoreRank, BestCrown),
-     PlayCount AS (SELECT Baid, COUNT(Baid) AS PlayCount
+     PlayCountCTE AS (SELECT Baid, COUNT(Baid) AS PlayCount
                    FROM SongPlayData
                    WHERE Baid = @Baid),
-     Dan AS (SELECT Baid, MAX(DanId) AS DanId, ClearState
+     DanCTE AS (SELECT Baid, MAX(DanId) AS DanId, ClearState
              FROM DanScoreData
              WHERE DanType = 1
                AND Baid = @Baid
@@ -30,6 +30,9 @@ WITH DifficultyCTE AS (SELECT Baid,
 SELECT ud.MyDonName,
        ud.Title,
        ud.AchievementDisplayDifficulty,
+       ud.CostumeData,
+       ud.ColorBody,
+       ud.ColorFace,
        pc.PlayCount,
        d.DanId,
        d.ClearState,
@@ -45,7 +48,7 @@ SELECT ud.MyDonName,
        bcr.bestcrown_2,
        bcr.bestcrown_3
 FROM UserData ud
-         INNER JOIN (SELECT Baid,
+         LEFT JOIN (SELECT Baid,
                             SUM(CASE WHEN BestScoreRank = 1 THEN Count ELSE 0 END) AS bestscorerank_1,
                             SUM(CASE WHEN BestScoreRank = 2 THEN Count ELSE 0 END) AS bestscorerank_2,
                             SUM(CASE WHEN BestScoreRank = 3 THEN Count ELSE 0 END) AS bestscorerank_3,
@@ -54,16 +57,16 @@ FROM UserData ud
                             SUM(CASE WHEN BestScoreRank = 6 THEN Count ELSE 0 END) AS bestscorerank_6,
                             SUM(CASE WHEN BestScoreRank = 7 THEN Count ELSE 0 END) AS bestscorerank_7,
                             SUM(CASE WHEN BestScoreRank = 8 THEN Count ELSE 0 END) AS bestscorerank_8
-                     FROM AchievementPanel
+                     FROM AchievementPanelCTE
                      WHERE BestScoreRank IS NOT NULL
                      GROUP BY Baid) bsr ON ud.Baid = bsr.Baid
-         INNER JOIN (SELECT Baid,
+         LEFT JOIN (SELECT Baid,
                             SUM(CASE WHEN BestCrown = 1 THEN Count ELSE 0 END) AS bestcrown_1,
                             SUM(CASE WHEN BestCrown = 2 THEN Count ELSE 0 END) AS bestcrown_2,
                             SUM(CASE WHEN BestCrown = 3 THEN Count ELSE 0 END) AS bestcrown_3
-                     FROM AchievementPanel
+                     FROM AchievementPanelCTE
                      WHERE BestCrown IS NOT NULL
                      GROUP BY Baid) bcr ON ud.Baid = bcr.Baid
-         INNER JOIN PlayCount pc ON ud.Baid = pc.Baid
-         LEFT JOIN Dan d ON ud.Baid = d.Baid
+         LEFT JOIN PlayCountCTE pc ON ud.Baid = pc.Baid
+         LEFT JOIN DanCTE d ON ud.Baid = d.Baid
 WHERE ud.Baid = @Baid;
