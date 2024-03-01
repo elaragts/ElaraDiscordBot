@@ -32,7 +32,6 @@ module.exports = {
         await interaction.deferReply();
         const baid = taikodb.getBaidFromAccessCode(botdb.getAccessCodeFromDiscordId(user.id));
         const profile = await taikodb.getPlayerProfile(baid);
-        console.log(profile)
         const clearState = bot.daniClearStateToEmoji(profile.ClearState);
         const dani = data.danIdToName(profile.DanId)
         let achievementPanelEmoji = '';
