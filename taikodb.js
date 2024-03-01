@@ -6,6 +6,8 @@
 const fs = require('fs');
 const path = require('path');
 const queries = path.join(__dirname, 'queries');
+const costume = require('@costume');
+
 const Database = require('better-sqlite3');
 const db = new Database('./taiko.db3', { readonly: true });
 const profileQuery = fs.readFileSync(path.join(queries, 'profile.sql'), 'utf8');
@@ -13,7 +15,7 @@ const leaderboardQuery = fs.readFileSync(path.join(queries, 'leaderboard.sql'), 
 const baidFromAccessCodeQuery = fs.readFileSync(path.join(queries, 'baidFromAccessCode.sql'), 'utf8');
 const bestScoreQuery = fs.readFileSync(path.join(queries, 'bestScore.sql'), 'utf8');
 const playByScoreQuery = fs.readFileSync(path.join(queries, 'playByScore.sql'), 'utf8');
-
+const costumeQuery = fs.readFileSync(path.join(queries, 'costume.sql'), 'utf8');
 
 //statements
 const lb = db.prepare(leaderboardQuery);
@@ -21,6 +23,7 @@ const selectBaidFromAccessCode = db.prepare(baidFromAccessCodeQuery).pluck();
 const selectBestScore = db.prepare(bestScoreQuery);
 const selectPlayByScore = db.prepare(playByScoreQuery);
 const selectPlayerProfile = db.prepare(profileQuery);
+const selectCostume = db.prepare(costumeQuery);
 
 const getLeaderboard = (uniqueId, difficulty) => {
     return lb.all(uniqueId, difficulty);
@@ -76,7 +79,15 @@ const difficultyIdToName = (difficultyId, lang) => {
     }
 }
 
-const getPlayerProfile = (Baid) => {
+const getPlayerProfile = async (Baid) => {
     return selectPlayerProfile.get({ Baid: Baid });
 }
-module.exports = { getLeaderboard, getBaidFromAccessCode, difficultyIdToName, getBestScore, getPlayerProfile };
+
+const getCostume = async (Baid) => {
+    const data = selectCostume.get(Baid);
+    if (data === undefined) return undefined;
+    return await costume.createCostumeAvatar(JSON.parse(data.CostumeData), parseInt(data.ColorBody), parseInt(data.ColorFace));
+}
+
+
+module.exports = { getLeaderboard, getBaidFromAccessCode, difficultyIdToName, getBestScore, getPlayerProfile, getCostume };

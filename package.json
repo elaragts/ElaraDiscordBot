@@ -20,6 +20,7 @@
     "@data": "./data.js",
     "@taikodb": "./taikodb.js",
     "@bot": "./bot.js",
-    "@botdb": "./botdb.js"
+    "@botdb": "./botdb.js",
+    "@costume": "./costume.js"
   }
 }

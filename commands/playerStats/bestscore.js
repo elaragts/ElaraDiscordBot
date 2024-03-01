@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const {SlashCommandBuilder, AttachmentBuilder} = require('discord.js');
 const data = require('@data');
 const taikodb = require('@taikodb');
 const bot = require('@bot');
@@ -18,11 +18,11 @@ module.exports = {
                 .setDescription('Difficulty of the map')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'かんたん/Easy', value: '1' },
-                    { name: 'ふつう/Normal', value: '2' },
-                    { name: 'むずかしい/Hard', value: '3' },
-                    { name: 'おに/Oni', value: '4' },
-                    { name: 'おに (裏)/Ura Oni', value: '5' }
+                    {name: 'かんたん/Easy', value: '1'},
+                    {name: 'ふつう/Normal', value: '2'},
+                    {name: 'むずかしい/Hard', value: '3'},
+                    {name: 'おに/Oni', value: '4'},
+                    {name: 'おに (裏)/Ura Oni', value: '5'}
                 )
         )
         .addUserOption(option =>
@@ -69,7 +69,7 @@ module.exports = {
             await interaction.deferReply();
             let searchResult = data.searchSongs(songInput);
             if (searchResult.length === 0) {
-                bot.editReplyWithErrorMessage(interaction,'Best Score', `Song ${songInput} not found!`);
+                bot.editReplyWithErrorMessage(interaction, 'Best Score', `Song ${songInput} not found!`);
                 return;
             }
             [uniqueId, lang] = searchResult;
@@ -81,12 +81,13 @@ module.exports = {
                 title: `${user.username} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
                 description: 'No play data available for this song.',
                 color: 15410003,
+
                 author: {
                     name: "Best Score"
                 },
                 timestamp: new Date().toISOString()
             };
-            await interaction.editReply({ embeds: [returnEmbed] });
+            await interaction.editReply({embeds: [returnEmbed]});
             return;
         }
 
@@ -114,6 +115,9 @@ module.exports = {
         if (data.getSongStars(uniqueId, difficulty) === 0) {
             desc = 'This difficulty does not exist.';
         }
+        //construct avatar
+        const avatar = await taikodb.getCostume(baid);
+        const attachment = new AttachmentBuilder(avatar, {name: 'avatar.png'});
         //construct embed
         const returnEmbed = {
             title: `${song.MyDonName} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
@@ -121,6 +125,9 @@ module.exports = {
             description: `## ${desc}${song.Score}${pointsLabel}`,
             author: {
                 name: `Best Score`
+            },
+            thumbnail: {
+                url: `attachment://avatar.png`
             },
             timestamp: song.PlayTime,
             fields: [
@@ -136,6 +143,6 @@ module.exports = {
                 }
             ]
         };
-        await interaction.editReply({ embeds: [returnEmbed] });
+        await interaction.editReply({embeds: [returnEmbed], files: [attachment]});
     },
 };

@@ -30,7 +30,9 @@ WITH DifficultyCTE AS (SELECT Baid,
 SELECT ud.MyDonName,
        ud.Title,
        ud.AchievementDisplayDifficulty,
-       ud.CostumeFlgArray,
+       ud.CostumeData,
+       ud.ColorBody,
+       ud.ColorFace,
        pc.PlayCount,
        d.DanId,
        d.ClearState,
@@ -46,7 +48,7 @@ SELECT ud.MyDonName,
        bcr.bestcrown_2,
        bcr.bestcrown_3
 FROM UserData ud
-         INNER JOIN (SELECT Baid,
+         LEFT JOIN (SELECT Baid,
                             SUM(CASE WHEN BestScoreRank = 1 THEN Count ELSE 0 END) AS bestscorerank_1,
                             SUM(CASE WHEN BestScoreRank = 2 THEN Count ELSE 0 END) AS bestscorerank_2,
                             SUM(CASE WHEN BestScoreRank = 3 THEN Count ELSE 0 END) AS bestscorerank_3,
@@ -58,13 +60,13 @@ FROM UserData ud
                      FROM AchievementPanelCTE
                      WHERE BestScoreRank IS NOT NULL
                      GROUP BY Baid) bsr ON ud.Baid = bsr.Baid
-         INNER JOIN (SELECT Baid,
+         LEFT JOIN (SELECT Baid,
                             SUM(CASE WHEN BestCrown = 1 THEN Count ELSE 0 END) AS bestcrown_1,
                             SUM(CASE WHEN BestCrown = 2 THEN Count ELSE 0 END) AS bestcrown_2,
                             SUM(CASE WHEN BestCrown = 3 THEN Count ELSE 0 END) AS bestcrown_3
                      FROM AchievementPanelCTE
                      WHERE BestCrown IS NOT NULL
                      GROUP BY Baid) bcr ON ud.Baid = bcr.Baid
-         INNER JOIN PlayCountCTE pc ON ud.Baid = pc.Baid
+         LEFT JOIN PlayCountCTE pc ON ud.Baid = pc.Baid
          LEFT JOIN DanCTE d ON ud.Baid = d.Baid
 WHERE ud.Baid = @Baid;
