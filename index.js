@@ -1,13 +1,13 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const {Client, Collection, Events, GatewayIntentBits} = require('discord.js');
 require('module-alias/register');
-const { token } = require('./config.json');
+const {token} = require('./config.json');
 const bot = require('@bot');
 const backup = require('./backup.js')
 
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent]});
 
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
@@ -30,7 +30,9 @@ for (const folder of commandFolders) {
 client.once(Events.ClientReady, readyClient => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
     backup.backupAndUpload(client)
-    setInterval((client) => {backup.backupAndUpload(client)}, 3600000); // Set an interval of 1 hour
+    setInterval(() => {
+        backup.backupAndUpload(client);
+    }, 1000 * 60 * 60);
 });
 
 client.on(Events.InteractionCreate, async interaction => {
