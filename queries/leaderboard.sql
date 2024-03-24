@@ -5,3 +5,4 @@ WHERE SongID = ?
   AND Difficulty = ?
 ORDER BY sbd.BestScore DESC
 LIMIT 10
+OFFSET ?

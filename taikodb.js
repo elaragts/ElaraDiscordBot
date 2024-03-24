@@ -27,8 +27,8 @@ const selectPlayByScore = db.prepare(playByScoreQuery);
 const selectPlayerProfile = db.prepare(profileQuery);
 const selectCostume = db.prepare(costumeQuery);
 
-const getLeaderboard = (uniqueId, difficulty) => {
-    return lb.all(uniqueId, difficulty);
+const getLeaderboard = (uniqueId, difficulty, offset) => {
+    return lb.all(uniqueId, difficulty, offset);
 }
 
 const getBestScore = (uniqueId, difficulty, Baid) => {

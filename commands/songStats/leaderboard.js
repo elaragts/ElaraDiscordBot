@@ -25,12 +25,19 @@ module.exports = {
                     { name: 'おに (裏)/Ura Oni', value: '5' }
                 )
         )
+        .addIntegerOption(option =>
+            option.setName('page')
+                .setDescription('Leaderboard Page')
+                .setRequired(false)
+                .setMinValue(1)
+        )
     ,
     //handle autocomplete interaction
     autocomplete,
     async execute(interaction) {
         const songInput = interaction.options.getString('song');
         const difficulty = parseInt(interaction.options.getString('difficulty'));
+        const page = interaction.options.getInteger('page') || 1;
         //error checking
         let uniqueId, lang;
         if (songInput.includes('|')) { //search with autocomplete
@@ -57,7 +64,7 @@ module.exports = {
         }
 
         //error checking done
-        const res = taikodb.getLeaderboard(uniqueId, difficulty); //taiko DB query result
+        const res = taikodb.getLeaderboard(uniqueId, difficulty, (page-1)*10); //taiko DB query result
         let desc = '';
 
         //iterate over taiko DB return value and create text for the embed ({i}. {player}: :crown:{score})
@@ -68,7 +75,7 @@ module.exports = {
             let discordId = botdb.getDiscordIdFromBaid(res[i].Baid);
             if (discordId === undefined) name = res[i].MyDonName;
             else name = `<@${discordId}>`;
-            desc += `${i}. ${name}: ${crown}${rank}${res[i].BestScore}\n`
+            desc += `${(page-1)*10+parseInt(i)+1}. ${name}: ${crown}${rank}${res[i].BestScore}\n`
         }
         //no results
         if (res.length === 0) {
