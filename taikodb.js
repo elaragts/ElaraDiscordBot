@@ -13,6 +13,7 @@ const db = new Database('./taiko.db3', { readonly: true });
 const profileQuery = fs.readFileSync(path.join(queries, 'profile.sql'), 'utf8');
 const leaderboardQuery = fs.readFileSync(path.join(queries, 'leaderboard.sql'), 'utf8');
 const baidFromAccessCodeQuery = fs.readFileSync(path.join(queries, 'baidFromAccessCode.sql'), 'utf8');
+const accessCodeFromBaidQuery = fs.readFileSync(path.join(queries, 'accessCodeFromBaid.sql'), 'utf8');
 const bestScoreQuery = fs.readFileSync(path.join(queries, 'bestScore.sql'), 'utf8');
 const playByScoreQuery = fs.readFileSync(path.join(queries, 'playByScore.sql'), 'utf8');
 const costumeQuery = fs.readFileSync(path.join(queries, 'costume.sql'), 'utf8');
@@ -20,6 +21,7 @@ const costumeQuery = fs.readFileSync(path.join(queries, 'costume.sql'), 'utf8');
 //statements
 const lb = db.prepare(leaderboardQuery);
 const selectBaidFromAccessCode = db.prepare(baidFromAccessCodeQuery).pluck();
+const selectAccessCodeFromBaid = db.prepare(accessCodeFromBaidQuery).pluck();
 const selectBestScore = db.prepare(bestScoreQuery);
 const selectPlayByScore = db.prepare(playByScoreQuery);
 const selectPlayerProfile = db.prepare(profileQuery);
@@ -41,6 +43,9 @@ const getBaidFromAccessCode = (accessCode) => {
     return selectBaidFromAccessCode.get(accessCode);
 }
 
+const getAccessCodeFromBaid = (baid) => {
+    return selectAccessCodeFromBaid.get(baid);
+}
 
 const difficultyIdToName = (difficultyId, lang) => {
     switch (lang) {
@@ -90,4 +95,4 @@ const getCostume = async (Baid) => {
 }
 
 
-module.exports = { getLeaderboard, getBaidFromAccessCode, difficultyIdToName, getBestScore, getPlayerProfile, getCostume };
+module.exports = { getLeaderboard, getBaidFromAccessCode, getAccessCodeFromBaid, difficultyIdToName, getBestScore, getPlayerProfile, getCostume };

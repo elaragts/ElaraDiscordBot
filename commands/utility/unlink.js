@@ -10,8 +10,8 @@ module.exports = {
         ,
     async execute(interaction) {
         const user = interaction.user;
-        if (botdb.getAccessCodeFromDiscordId(user.id) === undefined) {
-            await bot.replyWithErrorMessage(interaction, 'link', 'Your account is not linked to an AccessCode yet')
+        if (botdb.getBaidFromDiscordId(user.id) === undefined) {
+            await bot.replyWithErrorMessage(interaction, 'link', 'Your account is not linked to a TPS profile yet')
             return;
         }
         botdb.unlinkDiscord(user.id);

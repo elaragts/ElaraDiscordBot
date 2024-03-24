@@ -65,7 +65,7 @@ module.exports = {
             const crown = bot.crownIdToEmoji(res[i].BestCrown);
             const rank = bot.rankIdToEmoji(res[i].BestScoreRank - 2);
             let name;
-            let discordId = botdb.getDiscordIdFromAccessCode(res[i].AccessCode);
+            let discordId = botdb.getDiscordIdFromBaid(res[i].Baid);
             if (discordId === undefined) name = res[i].MyDonName;
             else name = `<@${discordId}>`;
             desc += `${i}. ${name}: ${crown}${rank}${res[i].BestScore}\n`

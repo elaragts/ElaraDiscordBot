@@ -15,22 +15,21 @@ module.exports = {
         )
     ,
     async execute(interaction) {
-        let user;
+        let baid;
         if (interaction.options.getUser('user')) {
-            user = interaction.options.getUser('user');
-            if (botdb.getAccessCodeFromDiscordId(user.id) === undefined) {
+            baid = botdb.getBaidFromDiscordId(interaction.options.getUser('user').id);
+            if (baid === undefined) {
                 await bot.replyWithErrorMessage(interaction, 'Profile', 'This user has not linked their discord account to their card yet!');
                 return;
             }
         } else {
-            user = interaction.user;
-            if (botdb.getAccessCodeFromDiscordId(user.id) === undefined) {
+            baid = botdb.getBaidFromDiscordId(interaction.user.id);
+            if (baid === undefined) {
                 await bot.replyWithErrorMessage(interaction, 'Profile', 'You have not linked your discord account to your card yet!');
                 return;
             }
         }
         await interaction.deferReply();
-        const baid = taikodb.getBaidFromAccessCode(botdb.getAccessCodeFromDiscordId(user.id));
         const profile = await taikodb.getPlayerProfile(baid);
         const clearState = bot.daniClearStateToEmoji(profile.ClearState);
         const dani = data.danIdToName(profile.DanId)
