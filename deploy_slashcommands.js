@@ -1,6 +1,6 @@
 require('module-alias/register');
 const {REST, Routes} = require('discord.js');
-const {clientId, guildId, token} = require('./config.json');
+const {clientId, guildId, token, deployment } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -37,7 +37,7 @@ const rest = new REST().setToken(token);
         const data = await rest.put(Routes.applicationCommands(clientId), {body: commands})
         const data2 = await rest.put(
 			Routes.applicationGuildCommands(clientId, guildId),
-			{ body: commands },
+			{ body: deployment === "production" ? [] : commands },
 		);
 
         console.log(`Successfully reloaded ${data.length} application (/) commands.`);
