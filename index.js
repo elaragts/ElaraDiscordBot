@@ -4,6 +4,7 @@ const {Client, Collection, Events, GatewayIntentBits} = require('discord.js');
 require('module-alias/register');
 const {token} = require('./config.json');
 const bot = require('@bot');
+const taikodb = require('@taikodb');
 const backup = require('./backup.js')
 
 
@@ -41,6 +42,20 @@ client.on(Events.InteractionCreate, async interaction => {
         if (interaction.isAutocomplete()) await bot.handleAutocomplete(interaction);
     } catch (e) {
         console.log(e)
+    }
+});
+
+process.on('SIGINT', async () => {
+    console.log('Exiting Gracefully...');
+    try {
+        for (const [Baid, value] of bot.playerFavouritedSongs.entries()) {
+            console.log(`${Baid}: ${value}`);
+            taikodb.setFavouriteSongsArray(Baid, value);
+        }
+    } catch (error) {
+        console.error('Cleanup encountered an error:', error);
+    } finally {
+        process.exit(0);
     }
 });
 

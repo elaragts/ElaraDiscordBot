@@ -69,7 +69,7 @@ module.exports = {
   ${rankEmojis[6]} ${padString(rankAndCrownValues['rank6'], maxLength)}
   ${rankEmojis[3]} ${padString(rankAndCrownValues['rank3'], maxLength)} ${rankEmojis[4]} ${padString(rankAndCrownValues['rank4'], maxLength)} ${rankEmojis[5]} ${padString(rankAndCrownValues['rank5'], maxLength)}
   ${rankEmojis[0]} ${padString(rankAndCrownValues['rank0'], maxLength)} ${rankEmojis[1]} ${padString(rankAndCrownValues['rank1'], maxLength)} ${rankEmojis[2]} ${padString(rankAndCrownValues['rank2'], maxLength)}
-  ${bot.crownIdToEmoji(3)} ${padString(rankAndCrownValues['crown3'], maxLength)} ${bot.crownIdToEmoji(2)} ${padString(rankAndCrownValues['crown2'], maxLength)} ${bot.crownIdToEmoji(1)} ${padString(rankAndCrownValues['crown1'], maxLength)}
+  ${bot.crownIdToEmoji(1)} ${padString(rankAndCrownValues['crown1'], maxLength)} ${bot.crownIdToEmoji(2)} ${padString(rankAndCrownValues['crown2'], maxLength)} ${bot.crownIdToEmoji(3)} ${padString(rankAndCrownValues['crown3'], maxLength)}
 `;
         }
         const avatar = await costume.createCostumeAvatar(JSON.parse(profile.CostumeData), parseInt(profile.ColorBody), parseInt(profile.ColorFace))

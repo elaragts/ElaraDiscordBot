@@ -21,6 +21,7 @@
     "@taikodb": "./taikodb.js",
     "@bot": "./bot.js",
     "@botdb": "./botdb.js",
-    "@costume": "./costume.js"
+    "@costume": "./costume.js",
+    "@config": "./config.json"
   }
 }

@@ -5,7 +5,8 @@
  */
 
 const Database = require('better-sqlite3');
-const db = new Database('./bot.db3');
+const {botDBPath} = require('@config');
+const db = new Database(botDBPath);
 const taikoDB = require('@taikodb');
 
 const insertUser = db.prepare('INSERT INTO user (discordId, Baid) VALUES (?, ?)');
@@ -14,6 +15,7 @@ const selectACFromDiscordId = db.prepare('SELECT accessCode FROM user WHERE disc
 const selectBaidFromDiscordId = db.prepare('SELECT Baid FROM user WHERE discordId = ?').pluck();
 const selectDiscordIdFromBaid = db.prepare('SELECT discordId FROM user WHERE Baid = ?').pluck();
 const addBaid = db.prepare('UPDATE user SET Baid = ? WHERE accessCode = ?');
+const addBattleStmt = db.prepare('INSERT INTO battle (songId, playerOneId, playerTwoId, winnerId) VALUES (?, ?, ?, ?)')
 const linkDiscord = (discordId, baid) => {
     insertUser.run(discordId, baid);
 }
@@ -52,4 +54,8 @@ const getDiscordIdFromBaid = (baid) => {
     return res;
 }
 
-module.exports = { linkDiscord, unlinkDiscord, getBaidFromDiscordId, getDiscordIdFromBaid};
+const addBattle = (songId, playerOneId, playerTwoId, winnerId) => {
+    addBattleStmt.run(songId, playerOneId, playerTwoId, winnerId);
+}
+
+module.exports = {linkDiscord, unlinkDiscord, getBaidFromDiscordId, getDiscordIdFromBaid, addBattle};

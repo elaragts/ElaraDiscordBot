@@ -33,8 +33,6 @@ const {
     dani6EmojiId
 } = require('./config.json');
 
-let ongoingLinks = new Set(); //Array of Discord user IDs of people trying to link their account
-
 const handleChatInputCommand = async (interaction) => {
     const command = interaction.client.commands.get(interaction.commandName);
 
@@ -208,8 +206,12 @@ const judgeIdToEmoji = (judgeId) => {
     }
 }
 
+//battle stuff
+
+const ongoingBattles = new Set();
+const playerFavouritedSongs = new Map();
+
 module.exports = {
-    ongoingLinks,
     replyWithErrorMessage,
     editReplyWithErrorMessage,
     handleChatInputCommand,
@@ -220,4 +222,6 @@ module.exports = {
     returnAutocomplete,
     judgeIdToEmoji,
     daniClearStateToEmoji,
+    ongoingBattles,
+    playerFavouritedSongs
 }
