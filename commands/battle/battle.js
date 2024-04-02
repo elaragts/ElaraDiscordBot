@@ -95,7 +95,7 @@ module.exports = {
             components: [joinRow],
         });
 
-        const joinCollector = joinResponse.createMessageComponentCollector({filter: i => true, time: 60000}); // i => true (I am 7 picoseconds away from shooting myself)
+        const joinCollector = joinResponse.createMessageComponentCollector({filter: i => true, time: 600000}); // i => true (I am 7 picoseconds away from shooting myself)
 
         joinCollector.on('collect', async i => {
             if (i.customId === 'cancel' && i.user.id === interaction.user.id) {
@@ -186,6 +186,10 @@ module.exports = {
 
             submissionCollector.on('collect', async i => {
                 if (i.customId !== 'submit') return;
+                if (i.user.id === userOne.id && userOnePlay !== undefined || i.user.id === userTwo.id && userTwoPlay !== undefined) {
+                    await i.reply({content: "You already submitted a score", ephemeral: true});
+                    return;
+                }
                 const baid = botdb.getBaidFromDiscordId(i.user.id);
                 const songPlay = taikodb.getLatestSongPlayFromBaid(baid, songId, difficulty);
                 if (songPlay === undefined || songPlay.Id <= minSongPlayId) {
@@ -238,7 +242,7 @@ module.exports = {
 
             const updateBattleEmbed = async (i) => {
                 const userOnePlayStr = userOnePlay === undefined ? 'No score submitted' :
-                    `${bot.crownIdToEmoji(userOnePlay.crown)}${bot.rankIdToEmoji(userOnePlay.ScoreRank - 2)} ${userOnePlay.Score}
+                    `${bot.crownIdToEmoji(userOnePlay.Crown)}${bot.rankIdToEmoji(userOnePlay.ScoreRank - 2)} ${userOnePlay.Score}
                     ${bot.judgeIdToEmoji(0)}${userOnePlay.GoodCount}
                     ${bot.judgeIdToEmoji(1)}${userOnePlay.OkCount}
                     ${bot.judgeIdToEmoji(2)}${bot.judgeIdToEmoji(3)}${userOnePlay.MissCount}
@@ -246,7 +250,7 @@ module.exports = {
                     **Max Drumroll:** ${userOnePlay.DrumrollCount}
                     `;
                 const userTwoPlayStr = userTwoPlay === undefined ? 'No score submitted' :
-                    `${bot.crownIdToEmoji(userTwoPlay.crown)}${bot.rankIdToEmoji(userTwoPlay.ScoreRank - 2)} ${userTwoPlay.Score}
+                    `${bot.crownIdToEmoji(userTwoPlay.Crown)}${bot.rankIdToEmoji(userTwoPlay.ScoreRank - 2)} ${userTwoPlay.Score}
                     ${bot.judgeIdToEmoji(0)}${userTwoPlay.GoodCount}
                     ${bot.judgeIdToEmoji(1)}${userTwoPlay.OkCount}
                     ${bot.judgeIdToEmoji(2)}${bot.judgeIdToEmoji(3)}${userTwoPlay.MissCount}
