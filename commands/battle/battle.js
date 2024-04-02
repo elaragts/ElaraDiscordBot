@@ -145,7 +145,11 @@ module.exports = {
             }
         });
         const startBattle = async (i, userOne, userTwo) => {
-            await interaction.user.send("Battle started!");
+            try {
+                await interaction.user.send("Battle started!");
+            } catch (e) {
+                await interaction.channel.send(`<@${userOne.id}> Battle started!`)
+            }
             const minSongPlayId = taikodb.getMaxSongPlayId(); //minimum id of submission must be greater than current Max Song Play ID
             const baidOne = botdb.getBaidFromDiscordId(userOne.id);
             const baidTwo = botdb.getBaidFromDiscordId(userTwo.id);
