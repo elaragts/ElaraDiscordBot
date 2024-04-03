@@ -4,18 +4,15 @@ CREATE TABLE IF NOT EXISTS "user"
         primary key,
     accessCode TEXT
 , Baid integer);
+CREATE TABLE sqlite_sequence(name,seq);
 CREATE TABLE IF NOT EXISTS "battle"
 (
     id          integer not null
         constraint id
             primary key autoincrement,
     songId      integer,
-    playerOneId integer,
-    playerTwoId integer,
-    winnerId integer,
-FOREIGN KEY(playerOneId) REFERENCES user(discordId),
-FOREIGN KEY(playerTwoId) REFERENCES user(discordId),
-FOREIGN KEY(winnerId) REFERENCES user(discordId)
-    
+    playerOneBaid integer,
+    playerTwoBaid integer,
+    winnerBaid integer
+
 );
-CREATE TABLE sqlite_sequence(name,seq);
