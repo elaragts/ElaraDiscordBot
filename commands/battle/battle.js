@@ -80,6 +80,10 @@ module.exports = {
             [songId, lang] = searchResult;
             lang = parseInt(lang);
         }
+        if (data.getSongStars(songId, difficulty) === 0) {
+            await bot.replyWithErrorMessage(interaction, 'Battle', 'This song does not have a chart for this difficulty');
+            return;
+        }
         bot.ongoingBattles.add(userOne.id);
         const songName = getSongName(songId, lang);
         const returnEmbed = {
@@ -88,9 +92,10 @@ module.exports = {
             author: {
                 name: 'Battle'
             },
-            description: `## ${songName} ${bot.difficultyToEmoji(difficulty)}`,
+            description: `## ${songName} ${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(songId, difficulty)}`,
         };
-        const joinResponse = await interaction.reply({
+        let joinResponse;
+        joinResponse = await interaction.reply({
             embeds: [returnEmbed],
             components: [joinRow],
         });
@@ -98,7 +103,11 @@ module.exports = {
         const joinCollector = joinResponse.createMessageComponentCollector({filter: i => true, time: 600000}); // i => true (I am 7 picoseconds away from shooting myself)
 
         joinCollector.on('collect', async i => {
-            if (i.customId === 'cancel' && i.user.id === interaction.user.id) {
+            if (i.customId === 'cancel') {
+                if (i.user.id !== userOne.id) {
+                    await i.reply({content: "Only the host can cancel the battle", ephemeral: true});
+                    return;
+                }
                 await interaction.editReply({
                     embeds: [{
                         title: `${interaction.user.username} VS. TBD`,
@@ -125,7 +134,7 @@ module.exports = {
                     return;
                 }
                 joinCollector.stop('battle_joined');
-                await startBattle(i, userOne, i.user);
+                await confirmBattle(i, userOne, i.user);
             }
         });
 
@@ -144,12 +153,69 @@ module.exports = {
                 });
             }
         });
-        const startBattle = async (i, userOne, userTwo) => {
-            try {
-                await interaction.user.send("Battle started!");
+
+        const confirmBattle = async (i, userOne, userTwo) => {
+             try {
+                await interaction.user.send("A user joined your battle!");
             } catch (e) {
-                await interaction.channel.send(`<@${userOne.id}> Battle started!`)
+                await interaction.channel.send(`<@${userOne.id}> A user joined your battle!`)
             }
+            const start = new ButtonBuilder()
+                .setCustomId('start')
+                .setLabel('Start Battle')
+                .setStyle(ButtonStyle.Primary);
+            const cancel = new ButtonBuilder()
+                .setCustomId('cancel')
+                .setLabel('Cancel Battle')
+                .setStyle(ButtonStyle.Danger);
+
+            const confirmRow = new ActionRowBuilder()
+                .addComponents(start, cancel);
+            await i.update({
+                embeds: [{
+                    title: `${userOne.username} VS. ${userTwo.username}`,
+                    color: 15410003,
+                    author: {
+                        name: 'Battle'
+                    },
+                    description: `## ${songName} ${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(songId, difficulty)}\n### ${userTwo.username} has joined the battle!`,
+                }], components: [confirmRow]
+            });
+            const confirmCollector = joinResponse.createMessageComponentCollector({
+                filter: x => [userOne.id, userTwo.id].includes(x.user.id),
+                time: 300000
+            });
+
+            confirmCollector.on('collect', async x => {
+                if (x.customId === 'start') {
+                    if (x.user.id !== userOne.id) {
+                        await x.reply({content: "Only the host can start the battle", ephemeral: true});
+                        return;
+                    }
+                    confirmCollector.stop('battle_started');
+                    await startBattle(x, joinResponse, userOne, userTwo);
+                } else if (x.customId === 'cancel') {
+                    if (x.user.id !== userOne.id) {
+                        await x.reply({content: "Only the host can cancel the battle", ephemeral: true});
+                        return;
+                    }
+                    await x.update({
+                        embeds: [{
+                            title: `${interaction.user.username} VS. TBD`,
+                            color: 15410003,
+                            author: {
+                                name: 'Battle'
+                            },
+                            description: `Battle Cancelled`,
+                        }], components: []
+                    });
+                    bot.ongoingBattles.delete(userOne.id);
+                    bot.ongoingBattles.delete(userTwo.id);
+                    confirmCollector.stop('battle_canceled');
+                }
+            });
+        }
+        const startBattle = async (i, joinResponse, userOne, userTwo) => {
             const minSongPlayId = taikodb.getMaxSongPlayId(); //minimum id of submission must be greater than current Max Song Play ID
             const baidOne = botdb.getBaidFromDiscordId(userOne.id);
             const baidTwo = botdb.getBaidFromDiscordId(userTwo.id);
@@ -175,7 +241,7 @@ module.exports = {
                     author: {
                         name: 'Battle'
                     },
-                    description: `## ${songName} ${bot.difficultyToEmoji(difficulty)}\n### Instructions:\n1. set number of games to \`1\` in the service menu\n2. go to Liked Songs and find \`${songName}\`\n3. press submit button once you finish playing (and go back to attract screen)`,
+                    description: `## ${songName} ${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(songId, difficulty)}\n### Instructions:\n1. set number of games to \`1\` in the service menu\n2. go to Liked Songs and find \`${songName}\`\n3. press submit button once you finish playing (and go back to attract screen)`,
                 }], components: [submitRow]
             });
 
@@ -231,13 +297,13 @@ module.exports = {
                 //battle finished
                 let winner;
                 if (userOnePlay[winCondition] > userTwoPlay[winCondition]) {
-                    winner = userOne.id;
+                    winner = baidOne
                 } else if (userOnePlay[winCondition] < userTwoPlay[winCondition]) {
-                    winner = userTwo.id;
+                    winner = baidTwo;
                 } else {
                     winner = null;
                 }
-                botdb.addBattle(songId, userOne.id, userTwo.id, winner);
+                botdb.addBattle(songId, baidOne, baidTwo, winner);
             });
 
             const updateBattleEmbed = async (i) => {
@@ -257,17 +323,20 @@ module.exports = {
                     **Max Combo:** ${userTwoPlay.ComboCount}
                     **Max Drumroll:** ${userTwoPlay.DrumrollCount}
                     `;
-                let description = `## ${songName} ${bot.difficultyToEmoji(difficulty)}\n### Match Ongoing`
+                let description = `## ${songName} ${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(songId, difficulty)}\n`
                 let components = [submitRow];
+
                 if (userOnePlay !== undefined && userTwoPlay !== undefined) { //checking win condition twice is cringe but idrc
                     components = [];
                     if (userOnePlay[winCondition] > userTwoPlay[winCondition]) {
-                        description = `## ${songName} ${bot.difficultyToEmoji(difficulty)}\n### ${userOne.username} wins!`
+                        description += `### ${userOne.username} wins!`
                     } else if (userOnePlay[winCondition] < userTwoPlay[winCondition]) {
-                        description = `## ${songName} ${bot.difficultyToEmoji(difficulty)}\n### ${userTwo.username} wins!`
+                        description += `### ${userTwo.username} wins!`
                     } else {
-                        description = `## ${songName} ${bot.difficultyToEmoji(difficulty)}\n### Draw!`
+                        description += `### Draw!`
                     }
+                } else {
+                    description += "### Match Ongoing"
                 }
                 await i.update({
                     embeds: [{

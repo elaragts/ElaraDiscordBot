@@ -15,7 +15,7 @@ const selectACFromDiscordId = db.prepare('SELECT accessCode FROM user WHERE disc
 const selectBaidFromDiscordId = db.prepare('SELECT Baid FROM user WHERE discordId = ?').pluck();
 const selectDiscordIdFromBaid = db.prepare('SELECT discordId FROM user WHERE Baid = ?').pluck();
 const addBaid = db.prepare('UPDATE user SET Baid = ? WHERE accessCode = ?');
-const addBattleStmt = db.prepare('INSERT INTO battle (songId, playerOneId, playerTwoId, winnerId) VALUES (?, ?, ?, ?)')
+const addBattleStmt = db.prepare('INSERT INTO battle (songId, playerOneBaid, playerTwoBaid, winnerBaid) VALUES (?, ?, ?, ?)')
 const linkDiscord = (discordId, baid) => {
     insertUser.run(discordId, baid);
 }
@@ -54,8 +54,8 @@ const getDiscordIdFromBaid = (baid) => {
     return res;
 }
 
-const addBattle = (songId, playerOneId, playerTwoId, winnerId) => {
-    addBattleStmt.run(songId, playerOneId, playerTwoId, winnerId);
+const addBattle = (songId, playerOneBaid, playerTwoBaid, winnerBaid) => {
+    addBattleStmt.run(songId, playerOneBaid, playerTwoBaid, winnerBaid);
 }
 
 module.exports = {linkDiscord, unlinkDiscord, getBaidFromDiscordId, getDiscordIdFromBaid, addBattle};
