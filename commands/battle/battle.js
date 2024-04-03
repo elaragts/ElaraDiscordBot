@@ -4,6 +4,7 @@ const taikodb = require('@taikodb');
 const bot = require('@bot');
 const botdb = require('@botdb');
 const {getSongName} = require("../../data");
+const {getNameFromBaid} = require("../../taikodb");
 const autocomplete = bot.returnAutocomplete;
 module.exports = {
     data: new SlashCommandBuilder()
@@ -53,6 +54,7 @@ module.exports = {
         const songInput = interaction.options.getString('song');
         const difficulty = parseInt(interaction.options.getString('difficulty'));
         const baid = botdb.getBaidFromDiscordId(interaction.user.id);
+        const nameOne = taikodb.getNameFromBaid(baid);
         const winCondition = "Score"
         if (baid === undefined) {
             await bot.replyWithErrorMessage(interaction, 'Battle', 'You have not linked your discord account to your card yet!');
@@ -87,7 +89,7 @@ module.exports = {
         bot.ongoingBattles.add(userOne.id);
         const songName = getSongName(songId, lang);
         const returnEmbed = {
-            title: `${interaction.user.username} VS. TBD`,
+            title: `${nameOne} VS. TBD`,
             color: 15410003,
             author: {
                 name: 'Battle'
@@ -110,7 +112,7 @@ module.exports = {
                 }
                 await interaction.editReply({
                     embeds: [{
-                        title: `${interaction.user.username} VS. TBD`,
+                        title: `${nameOne} VS. TBD`,
                         color: 15410003,
                         author: {
                             name: 'Battle'
@@ -143,7 +145,7 @@ module.exports = {
                 bot.ongoingBattles.delete(userOne.id);
                 await interaction.editReply({
                     embeds: [{
-                        title: `${interaction.user.username} VS. TBD`,
+                        title: `${nameOne} VS. TBD`,
                         color: 15410003,
                         author: {
                             name: 'Battle'
@@ -160,6 +162,7 @@ module.exports = {
             } catch (e) {
                 await interaction.channel.send(`<@${userOne.id}> A user joined your battle!`)
             }
+            const nameTwo = getNameFromBaid(botdb.getBaidFromDiscordId(userTwo.id));
             const start = new ButtonBuilder()
                 .setCustomId('start')
                 .setLabel('Start Battle')
@@ -173,12 +176,12 @@ module.exports = {
                 .addComponents(start, cancel);
             await i.update({
                 embeds: [{
-                    title: `${userOne.username} VS. ${userTwo.username}`,
+                    title: `${nameOne} VS. ${nameTwo}`,
                     color: 15410003,
                     author: {
                         name: 'Battle'
                     },
-                    description: `## ${songName} ${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(songId, difficulty)}\n### ${userTwo.username} has joined the battle!`,
+                    description: `## ${songName} ${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(songId, difficulty)}\n### ${nameTwo} has joined the battle!`,
                 }], components: [confirmRow]
             });
             const confirmCollector = joinResponse.createMessageComponentCollector({
@@ -201,7 +204,7 @@ module.exports = {
                     }
                     await x.update({
                         embeds: [{
-                            title: `${interaction.user.username} VS. TBD`,
+                            title: `${nameOne}`,
                             color: 15410003,
                             author: {
                                 name: 'Battle'
@@ -219,6 +222,7 @@ module.exports = {
             const minSongPlayId = taikodb.getMaxSongPlayId(); //minimum id of submission must be greater than current Max Song Play ID
             const baidOne = botdb.getBaidFromDiscordId(userOne.id);
             const baidTwo = botdb.getBaidFromDiscordId(userTwo.id);
+            const nameTwo = taikodb.getNameFromBaid(baidTwo);
             bot.playerFavouritedSongs.set(baidOne, await taikodb.getFavouriteSongsArray(baidOne));
             bot.playerFavouritedSongs.set(baidTwo, await taikodb.getFavouriteSongsArray(baidTwo));
             await taikodb.setFavouriteSongsArray(baidOne, `[${songId}]`);
@@ -236,7 +240,7 @@ module.exports = {
 
             await i.update({
                 embeds: [{
-                    title: `${userOne.username} VS. ${userTwo.username}`,
+                    title: `${nameOne} VS. ${nameTwo}`,
                     color: 15410003,
                     author: {
                         name: 'Battle'
@@ -247,7 +251,7 @@ module.exports = {
 
             const submissionCollector = joinResponse.createMessageComponentCollector({
                 filter: x => [userOne.id, userTwo.id].includes(x.user.id),
-                time: 300000
+                time: 600000
             });
 
             submissionCollector.on('collect', async i => {
@@ -284,7 +288,7 @@ module.exports = {
                     bot.ongoingBattles.delete(userOne.id);
                     await interaction.editReply({
                         embeds: [{
-                            title: `${interaction.user.username} VS. TBD`,
+                            title: `${nameOne} VS. ${nameTwo}`,
                             color: 15410003,
                             author: {
                                 name: 'Battle'
@@ -329,9 +333,9 @@ module.exports = {
                 if (userOnePlay !== undefined && userTwoPlay !== undefined) { //checking win condition twice is cringe but idrc
                     components = [];
                     if (userOnePlay[winCondition] > userTwoPlay[winCondition]) {
-                        description += `### ${userOne.username} wins!`
+                        description += `### ${nameOne} wins!`
                     } else if (userOnePlay[winCondition] < userTwoPlay[winCondition]) {
-                        description += `### ${userTwo.username} wins!`
+                        description += `### ${nameTwo} wins!`
                     } else {
                         description += `### Draw!`
                     }
@@ -340,7 +344,7 @@ module.exports = {
                 }
                 await i.update({
                     embeds: [{
-                        title: `${userOne.username} VS. ${userTwo.username}`,
+                        title: `${nameOne} VS. ${nameTwo}`,
                         color: 15410003,
                         author: {
                             name: 'Battle'
@@ -348,12 +352,12 @@ module.exports = {
                         description: description,
                         fields: [
                             {
-                                name: userOne.username,
+                                name: nameOne,
                                 value: userOnePlayStr,
                                 inline: true
                             },
                             {
-                                name: userTwo.username,
+                                name: nameTwo,
                                 value: userTwoPlayStr,
                                 inline: true
                             }
