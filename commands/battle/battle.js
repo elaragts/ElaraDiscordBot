@@ -311,6 +311,9 @@ module.exports = {
             });
 
             const updateBattleEmbed = async (i) => {
+                console.log(data.getNoteCountFromSong(songId)[difficulty - 1])
+                const accuracyCoefficient = 100/data.getNoteCountFromSong(songId)[difficulty - 1];
+                console.log(accuracyCoefficient)
                 const userOnePlayStr = userOnePlay === undefined ? 'No score submitted' :
                     `${bot.crownIdToEmoji(userOnePlay.Crown)}${bot.rankIdToEmoji(userOnePlay.ScoreRank - 2)} ${userOnePlay.Score}
                     ${bot.judgeIdToEmoji(0)}${userOnePlay.GoodCount}
@@ -318,6 +321,7 @@ module.exports = {
                     ${bot.judgeIdToEmoji(2)}${bot.judgeIdToEmoji(3)}${userOnePlay.MissCount}
                     **Max Combo:** ${userOnePlay.ComboCount}
                     **Max Drumroll:** ${userOnePlay.DrumrollCount}
+                    **Accuracy:** ${(userOnePlay.GoodCount*accuracyCoefficient + userOnePlay.OkCount*accuracyCoefficient/2).toFixed(2)}%
                     `;
                 const userTwoPlayStr = userTwoPlay === undefined ? 'No score submitted' :
                     `${bot.crownIdToEmoji(userTwoPlay.Crown)}${bot.rankIdToEmoji(userTwoPlay.ScoreRank - 2)} ${userTwoPlay.Score}
@@ -326,6 +330,7 @@ module.exports = {
                     ${bot.judgeIdToEmoji(2)}${bot.judgeIdToEmoji(3)}${userTwoPlay.MissCount}
                     **Max Combo:** ${userTwoPlay.ComboCount}
                     **Max Drumroll:** ${userTwoPlay.DrumrollCount}
+                    **Accuracy:** ${(userTwoPlay.GoodCount*accuracyCoefficient + userTwoPlay.OkCount*accuracyCoefficient/2).toFixed(2)}%
                     `;
                 let description = `## ${songName} ${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(songId, difficulty)}\n`
                 let components = [submitRow];
