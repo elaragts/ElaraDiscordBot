@@ -311,9 +311,7 @@ module.exports = {
             });
 
             const updateBattleEmbed = async (i) => {
-                console.log(data.getNoteCountFromSong(songId)[difficulty - 1])
                 const accuracyCoefficient = 100/data.getNoteCountFromSong(songId)[difficulty - 1];
-                console.log(accuracyCoefficient)
                 const userOnePlayStr = userOnePlay === undefined ? 'No score submitted' :
                     `${bot.crownIdToEmoji(userOnePlay.Crown)}${bot.rankIdToEmoji(userOnePlay.ScoreRank - 2)} ${userOnePlay.Score}
                     ${bot.judgeIdToEmoji(0)}${userOnePlay.GoodCount}
