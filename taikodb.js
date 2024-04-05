@@ -116,8 +116,8 @@ const getMaxSongPlayId = () => {
     return selectMaxSongPlayId.get();
 }
 
-const getLatestSongPlayFromBaid = (Baid, songId, difficulty) => {
-    return selectLatestSongPlayFromBaid.get(Baid, songId, difficulty);
+const getLatestSongPlayFromBaid = (Baid, songId) => {
+    return selectLatestSongPlayFromBaid.get(Baid, songId);
 }
 
 const getNameFromBaid = (Baid) => {

@@ -261,7 +261,7 @@ module.exports = {
                     return;
                 }
                 const baid = botdb.getBaidFromDiscordId(i.user.id);
-                const songPlay = taikodb.getLatestSongPlayFromBaid(baid, songId, difficulty);
+                const songPlay = taikodb.getLatestSongPlayFromBaid(baid, songId);
                 if (songPlay === undefined || songPlay.Id <= minSongPlayId) {
                     await i.reply({content: "No score submitted", ephemeral: true});
                     return;

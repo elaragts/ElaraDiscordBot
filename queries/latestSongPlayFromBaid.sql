@@ -10,6 +10,5 @@ SELECT Id,
 FROM SongPlayData
 WHERE Baid = ?
   AND SongId = ?
-  AND Difficulty = ?
 ORDER BY Id DESC
 LIMIT 1;
