@@ -42,10 +42,14 @@ const getLeaderboard = (uniqueId, difficulty, offset) => {
 }
 
 const getBestScore = (uniqueId, difficulty, Baid) => {
-    const score = selectBestScore.get(uniqueId, difficulty, Baid);
+    const score = selectBestScore.get({SongId: uniqueId, Difficulty: difficulty, Baid: Baid});
     if (score === undefined) return undefined;
     let ret = selectPlayByScore.get(uniqueId, difficulty, Baid, score.BestScore);
     ret.crown = score.BestCrown;
+    ret.playCount = score.playCount;
+    ret.clearCount = score.clearCount;
+    ret.fullComboCount = score.fullComboCount;
+    ret.zenryouCount = score.zenryouCount;
     return ret;
 }
 

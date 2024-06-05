@@ -37,13 +37,16 @@ module.exports = {
         const songInput = interaction.options.getString('song');
         const difficulty = parseInt(interaction.options.getString('difficulty'));
         let baid;
+        let user;
         if (interaction.options.getUser('user')) {
-            baid = botdb.getBaidFromDiscordId(interaction.options.getUser('user').id);
+            user = interaction.options.getUser('user')
+            baid = botdb.getBaidFromDiscordId(user.id);
             if (baid === undefined) {
                 await bot.replyWithErrorMessage(interaction, 'Best Score', 'This user has not linked their discord account to their card yet!');
                 return;
             }
         } else {
+            user = interaction.user;
             baid = botdb.getBaidFromDiscordId(interaction.user.id);
             if (baid === undefined) {
                 await bot.replyWithErrorMessage(interaction, 'Best Score', 'You have not linked your discord account to your card yet!');
@@ -98,16 +101,23 @@ module.exports = {
         judgement += `${bot.judgeIdToEmoji(0)}${song.GoodCount}\n`;
         judgement += `${bot.judgeIdToEmoji(1)}${song.OkCount}\n`;
         judgement += `${bot.judgeIdToEmoji(2)}${bot.judgeIdToEmoji(3)}${song.MissCount}`;
-        pointsLabel = '点';
-        judgementLabel = '判定';
-        comboLabel = '最大コンボ数';
-        rendaLabel = '連打数';
+        let pointsLabel = '点';
+        let judgementLabel = '判定';
+        let comboLabel = '最大コンボ数';
+        let rendaLabel = '連打数';
+        let playCountLabel = 'プレイ回数';
+        let clearCountLabel = 'ノルマクリア回数';
+        let fullComboLabel = 'フルコンボ回数';
+        let zenryouLabel = '全良回数';
         if (lang === 1) {
             pointsLabel = ' points';
             judgementLabel = 'judgement';
             comboLabel = 'Max Combo';
             rendaLabel = 'Drumroll'
-
+            playCountLabel = 'Play Count'
+            clearCountLabel = 'Clear Count'
+            fullComboLabel = 'Full Combo Count';
+            zenryouLabel = 'Donderful Combo Count';
         }
 
         //no results
@@ -121,7 +131,7 @@ module.exports = {
         const returnEmbed = {
             title: `${song.MyDonName} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
             color: 15410003,
-            description: `## ${desc}${song.Score}${pointsLabel}`,
+            description: `## ${desc}${song.Score}${pointsLabel}\n${playCountLabel}: ${song.playCount}\n${clearCountLabel}: ${song.clearCount}\n${fullComboLabel}: ${song.fullComboCount}\n${zenryouLabel}: ${song.zenryouCount}`,
             author: {
                 name: `Best Score`
             },
