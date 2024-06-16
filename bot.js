@@ -207,7 +207,6 @@ const judgeIdToEmoji = (judgeId) => {
 }
 
 const validateSong = async (interaction, songInput, commandName) => {
-    console.log(songInput);
     let uniqueId, lang;
     if (songInput.includes('|')) { //search with autocomplete
       [uniqueId, lang] = songInput.split('|');

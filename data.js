@@ -11,7 +11,7 @@ var initialized = false;
 
 //Error Checks
 const checkUniqueId = (uniqueId, location) => {
-    if (!(uniqueId in songs)) throw new Error("Song not found! (uniqueId: " + uniqueId + ", location: " + location + ")");
+    if (!(uniqueId in songs)) throw new Error("Song not found! (uniqueId: " + uniqueId + ", location: " + locaxtion + ")");
 }
 
 const checkEventFolder = (folderId, location) => {
@@ -332,7 +332,13 @@ const isLangInRange = (lang) => {
 const isGenreInRange = (genreNo) => {
     return genreNo >= 0 && genreNo <= 7;
 }
+
+const randomSong = () => {
+   const keys = Object.keys(songs);
+   return keys[Math.floor(Math.random() * keys.length)];
+}
 module.exports = {
+    checkUniqueId,
     searchSongs,
     autocomplete,
     getSongName,
