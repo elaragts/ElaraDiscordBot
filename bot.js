@@ -206,6 +206,32 @@ const judgeIdToEmoji = (judgeId) => {
     }
 }
 
+const validateSong = async (interaction, songInput, commandName) => {
+    console.log(songInput);
+    let uniqueId, lang;
+    if (songInput.includes('|')) { //search with autocomplete
+      [uniqueId, lang] = songInput.split('|');
+      if (!data.isLangInRange(lang)) {
+        await replyWithErrorMessage(interaction, commandName, 'Bad input: invalid lang');
+        return undefined;
+      }
+      if (!data.isSongPresent(uniqueId)) {
+        await replyWithErrorMessage(interaction, commandName, 'Bad input: invalid song ID');
+        return undefined;
+      }
+      await interaction.deferReply();
+    } else { //search without autocomplete
+      await interaction.deferReply();
+      let searchResult = data.searchSongs(songInput);
+      if (searchResult.length === 0) {
+          await editReplyWithErrorMessage(interaction, commandName, `Song ${songInput} not found!`);
+          return undefined;
+      }
+      [uniqueId, lang] = searchResult;
+    }
+    return [parseInt(uniqueId), parseInt(lang)]
+}
+
 //battle stuff
 
 const ongoingBattles = new Set();
@@ -223,5 +249,6 @@ module.exports = {
     judgeIdToEmoji,
     daniClearStateToEmoji,
     ongoingBattles,
-    playerFavouritedSongs
+    playerFavouritedSongs,
+    validateSong
 }
