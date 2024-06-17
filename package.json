@@ -22,6 +22,7 @@
     "@bot": "./bot.js",
     "@botdb": "./botdb.js",
     "@costume": "./costume.js",
-    "@config": "./config.json"
+    "@config": "./config.json",
+    "@index": "./index.js"
   }
 }

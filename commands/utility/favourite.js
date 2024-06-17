@@ -18,19 +18,23 @@ module.exports = {
     autocomplete
     ,
     async execute(interaction) {
+        if (!bot.isBoostingServer(interaction.user.id)) {
+            await bot.replyWithErrorMessage(interaction, 'Favourite', 'You need to be a server booster to use this command!');
+            return;
+        }
         const baid = botdb.getBaidFromDiscordId(interaction.user.id);
         if (baid === undefined) {
-            await bot.replyWithErrorMessage(interaction, 'Best Score', 'You have not linked your discord account to your card yet!');
+            await bot.replyWithErrorMessage(interaction, 'Favourite', 'You have not linked your discord account to your card yet!');
             return;
         }
         const songValidationResult = await bot.validateSong(interaction, interaction.options.getString('song'), "Favourite");
         if (songValidationResult === undefined) return;
         const [uniqueId, lang] = songValidationResult;
         let favouriteSongs = JSON.parse(taikodb.getFavouriteSongsArray(baid));
-        const index = favouriteSongs.indexOf(uniqueId);
+        const i = favouriteSongs.indexOf(uniqueId);
         let message;
-        if (index > -1) {
-            favouriteSongs.splice(index, 1);
+        if (i > -1) {
+            favouriteSongs.splice(i, 1);
             message = `Successfully Removed \`${data.getSongName(uniqueId, lang)}\``
         } else {
             favouriteSongs.push(uniqueId);
