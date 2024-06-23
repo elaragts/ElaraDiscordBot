@@ -44,7 +44,7 @@ const getLeaderboard = (uniqueId, difficulty, offset) => {
 const getBestScore = (uniqueId, difficulty, Baid) => {
     const score = selectBestScore.get({SongId: uniqueId, Difficulty: difficulty, Baid: Baid});
     if (score === undefined) return undefined;
-    let ret = selectPlayByScore.get(uniqueId, difficulty, Baid, score.BestScore);
+    let ret = selectPlayByScore.get({songId: uniqueId, difficulty: difficulty, Baid: Baid, score: score.BestScore});
     ret.crown = score.BestCrown;
     ret.playCount = score.playCount;
     ret.clearCount = score.clearCount;

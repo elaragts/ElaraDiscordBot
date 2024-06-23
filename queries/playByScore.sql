@@ -8,12 +8,17 @@ SELECT ud.MyDonName,
        spd.GoodCount,
        spd.MissCount,
        spd.OkCount,
-       c.AccessCode
+       c.AccessCode,
+       (SELECT (count(*) + 1)
+        FROM SongBestData
+        WHERE SongId = @songId
+          AND Difficulty = @difficulty
+          AND BestScore > @score) AS leaderboardPosition
 FROM SongPlayData spd
          INNER JOIN UserData ud ON spd.Baid = ud.Baid
          INNER JOIN Card c ON spd.Baid = c.baid
-WHERE spd.SongID = ?
-  AND spd.Difficulty = ?
-  AND spd.Baid = ?
-  AND spd.Score = ?
+WHERE spd.SongID = @songId
+  AND spd.Difficulty = @difficulty
+  AND spd.Baid = @Baid
+  AND spd.Score = @score
 ORDER BY spd.Id

@@ -6,8 +6,8 @@ const botdb = require('@botdb');
 const autocomplete = bot.returnAutocomplete;
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('bestscore')
-        .setDescription('Best Score')
+        .setName('mystats')
+        .setDescription('My Stats')
         .addStringOption(option =>
             option.setName('song')
                 .setDescription('Song name')
@@ -42,14 +42,14 @@ module.exports = {
             user = interaction.options.getUser('user')
             baid = botdb.getBaidFromDiscordId(user.id);
             if (baid === undefined) {
-                await bot.replyWithErrorMessage(interaction, 'Best Score', 'This user has not linked their discord account to their card yet!');
+                await bot.replyWithErrorMessage(interaction, 'My Stats', 'This user has not linked their discord account to their card yet!');
                 return;
             }
         } else {
             user = interaction.user;
             baid = botdb.getBaidFromDiscordId(interaction.user.id);
             if (baid === undefined) {
-                await bot.replyWithErrorMessage(interaction, 'Best Score', 'You have not linked your discord account to your card yet!');
+                await bot.replyWithErrorMessage(interaction, 'My Stats', 'You have not linked your discord account to your card yet!');
                 return;
             }
         }
@@ -59,11 +59,11 @@ module.exports = {
             [uniqueId, lang] = songInput.split('|');
             lang = parseInt(lang);
             if (!data.isLangInRange(lang)) {
-                await bot.replyWithErrorMessage(interaction, 'Best Score', 'Bad input: invalid lang');
+                await bot.replyWithErrorMessage(interaction, 'My Stats', 'Bad input: invalid lang');
                 return;
             }
             if (!data.isSongPresent(uniqueId)) {
-                await bot.replyWithErrorMessage(interaction, 'Best Score', 'Bad input: invalid song ID');
+                await bot.replyWithErrorMessage(interaction, 'My Stats', 'Bad input: invalid song ID');
                 return;
             }
             await interaction.deferReply();
@@ -71,7 +71,7 @@ module.exports = {
             await interaction.deferReply();
             let searchResult = data.searchSongs(songInput);
             if (searchResult.length === 0) {
-                await bot.editReplyWithErrorMessage(interaction, 'Best Score', `Song ${songInput} not found!`);
+                await bot.editReplyWithErrorMessage(interaction, 'My Stats', `Song ${songInput} not found!`);
                 return;
             }
             [uniqueId, lang] = searchResult;
@@ -85,7 +85,7 @@ module.exports = {
                 color: 15410003,
 
                 author: {
-                    name: "Best Score"
+                    name: "My Stats"
                 },
                 timestamp: new Date().toISOString()
             };
@@ -109,15 +109,19 @@ module.exports = {
         let clearCountLabel = 'ノルマクリア回数';
         let fullComboLabel = 'フルコンボ回数';
         let zenryouLabel = '全良回数';
+        let leaderboardLabel = 'EGTSランキング'
+        let leaderboardSuffix = '位'
         if (lang === 1) {
             pointsLabel = ' points';
             judgementLabel = 'judgement';
             comboLabel = 'Max Combo';
-            rendaLabel = 'Drumroll'
-            playCountLabel = 'Play Count'
-            clearCountLabel = 'Clear Count'
+            rendaLabel = 'Drumroll';
+            playCountLabel = 'Play Count';
+            clearCountLabel = 'Clear Count';
             fullComboLabel = 'Full Combo Count';
             zenryouLabel = 'Donderful Combo Count';
+            leaderboardLabel = 'Leaderboard Placement';
+            leaderboardSuffix = '';
         }
 
         //no results
@@ -131,9 +135,9 @@ module.exports = {
         const returnEmbed = {
             title: `${song.MyDonName} | ${data.getSongName(uniqueId, lang)} | ${taikodb.difficultyIdToName(difficulty, lang)}${bot.difficultyToEmoji(difficulty)}★${data.getSongStars(uniqueId, difficulty)}`,
             color: 15410003,
-            description: `## ${desc}${song.Score}${pointsLabel}\n${playCountLabel}: ${song.playCount}\n${clearCountLabel}: ${song.clearCount}\n${fullComboLabel}: ${song.fullComboCount}\n${zenryouLabel}: ${song.zenryouCount}`,
+            description: `${leaderboardLabel}: ${song.leaderboardPosition}${leaderboardSuffix}\n${playCountLabel}: ${song.playCount}\n${clearCountLabel}: ${song.clearCount}\n${fullComboLabel}: ${song.fullComboCount}\n${zenryouLabel}: ${song.zenryouCount}\n## ${desc}${song.Score}${pointsLabel}`,
             author: {
-                name: `Best Score`
+                name: `My Stats`
             },
             thumbnail: {
                 url: `attachment://avatar.png`
