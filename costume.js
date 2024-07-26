@@ -89,11 +89,11 @@ const createCostumeAvatar = async (costumeData, bodyColourId, faceColourId) => {
     while (costumeData.length < 5) {
         costumeData.push(0);
     }
-    const kigurumiId = costumeData[0];
-    const headId = costumeData[1];
-    const bodyId = costumeData[2];
-    const faceId = costumeData[3];
-    const puchiId = costumeData[4];
+    const kigurumiId = costumeData.kigurumiId;
+    const headId = costumeData.headId;
+    const bodyId = costumeData.bodyId;
+    const faceId = costumeData.faceId;
+    const puchiId = costumeData.puchiId;
     let bodyMask, faceMask, headBodyMask, headFaceMask, body, face, head, kigurumi, puchi;
     if (kigurumiId === 0) {
         let bodyMaskPath = path.join(__dirname, `sprites/masks/body-bodymask-${padToFourDigits(bodyId)}.png`);

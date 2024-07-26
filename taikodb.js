@@ -105,7 +105,7 @@ const getPlayerProfile = async (Baid) => {
 const getCostume = async (Baid) => {
     const data = selectCostume.get(Baid);
     if (data === undefined) return undefined;
-    return await costume.createCostumeAvatar(JSON.parse(data.CostumeData), parseInt(data.ColorBody), parseInt(data.ColorFace));
+    return await costume.createCostumeAvatar({bodyId: data.CurrentBody, faceId: data.CurrentFace, headId: data.CurrentHead, kigurumiId: data.CurrentKigurumi, puchiId: data.CurrentPuchi}, parseInt(data.ColorBody), parseInt(data.ColorFace));
 }
 
 const getFavouriteSongsArray = (Baid) => {

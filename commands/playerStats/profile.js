@@ -72,7 +72,7 @@ module.exports = {
   ${bot.crownIdToEmoji(1)} ${padString(rankAndCrownValues['crown1'], maxLength)} ${bot.crownIdToEmoji(2)} ${padString(rankAndCrownValues['crown2'], maxLength)} ${bot.crownIdToEmoji(3)} ${padString(rankAndCrownValues['crown3'], maxLength)}
 `;
         }
-        const avatar = await costume.createCostumeAvatar(JSON.parse(profile.CostumeData), parseInt(profile.ColorBody), parseInt(profile.ColorFace))
+        const avatar = await costume.createCostumeAvatar({bodyId: profile.CurrentBody, faceId: profile.CurrentFace, headId: profile.CurrentHead, kigurumiId: profile.CurrentKigurumi, puchiId: profile.CurrentPuchi}, parseInt(profile.ColorBody), parseInt(profile.ColorFace))
         const attachment = new AttachmentBuilder(avatar, {name: 'avatar.png'});
 
         //construct embed
