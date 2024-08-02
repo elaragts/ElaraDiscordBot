@@ -23,6 +23,7 @@ const setFavouriteSongsArrayQuery = fs.readFileSync(path.join(queries, 'setFavou
 const getMaxSongPlayIdQuery = fs.readFileSync(path.join(queries, 'maxSongPlayId.sql'), 'utf8');
 const latestSongPlayFromBaidQuery = fs.readFileSync(path.join(queries, 'latestSongPlayFromBaid.sql'), 'utf8');
 const nameFromBaidQuery = fs.readFileSync(path.join(queries, 'nameFromBaid.sql'), 'utf8');
+const playCountQuery = fs.readFileSync(path.join(queries, 'playCount.sql'), 'utf8');
 //statements
 const lb = db.prepare(leaderboardQuery);
 const selectBaidFromAccessCode = db.prepare(baidFromAccessCodeQuery).pluck();
@@ -36,6 +37,7 @@ const setFavouriteSongsArrayStmt = db.prepare(setFavouriteSongsArrayQuery);
 const selectMaxSongPlayId = db.prepare(getMaxSongPlayIdQuery).pluck();
 const selectLatestSongPlayFromBaid = db.prepare(latestSongPlayFromBaidQuery);
 const selectNameFromBaid = db.prepare(nameFromBaidQuery).pluck();
+const selectMonthlyPlayCount = db.prepare(playCountQuery)
 
 const getLeaderboard = (uniqueId, difficulty, offset) => {
     return lb.all(uniqueId, difficulty, offset);
@@ -128,6 +130,9 @@ const getNameFromBaid = (Baid) => {
     return selectNameFromBaid.get(Baid);
 }
 
+const getMonthlyPlayCount = (Baid) => {
+    return selectMonthlyPlayCount.all(Baid)
+}
 module.exports = {
     getLeaderboard,
     getBaidFromAccessCode,
@@ -140,5 +145,6 @@ module.exports = {
     setFavouriteSongsArray,
     getMaxSongPlayId,
     getLatestSongPlayFromBaid,
-    getNameFromBaid
+    getNameFromBaid,
+    getMonthlyPlayCount
 };
